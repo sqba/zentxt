@@ -68,6 +68,7 @@ class RevisionPage(webapp.RequestHandler):
         prev = text
 
     template_values = {
+      'user' : user,
       'file_id' : file_id,
       'revisions' : revisions2,
       'last_text' : last_text,
