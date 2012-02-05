@@ -1,0 +1,44 @@
+<html>
+    <body>
+        <link rel="stylesheet" href="css/ui-lightness/jquery-ui-1.8.17.custom.css">
+        <style type="text/css">
+body {
+    font-size: 62.5%;
+}
+        </style>
+
+        <script src="js/jquery-1.7.1.js"></script>
+        <script src="js/jquery-ui-1.8.17.custom.min.js"></script>
+        <script>
+$(function() {
+    $( "#accordion" ).accordion();
+});
+        </script>
+
+
+
+        <div id="accordion" class="ui-accordion ui-widget ui-helper-reset">
+         <h3 class="ui-accordion-header ui-helper-reset ui-state-active ui-corner-top">
+            <a href="#">Edit</a>
+        </h3>
+        <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+            <p>
+                <form action="/save" method="post">
+                    <input type="hidden" name="file_id" value="{{ file_id }}">
+                    <div><textarea name="content" rows="30" cols="180">{{ last_text }}</textarea></div>
+                    <div><input type="submit" value="Save"></div>
+                </form>
+            </p>
+        </div>
+       {% for revision in revisions %}
+            <h3 class="ui-accordion-header ui-helper-reset ui-state-active ui-corner-top">
+                <a href="#">{{ revision.date }}</a>
+            </h3>
+            <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+                <p>
+                    {{ revision.diff }}
+                </p>
+            </div>
+        {% endfor %}
+</body>
+</html>
