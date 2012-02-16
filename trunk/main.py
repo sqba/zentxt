@@ -61,7 +61,10 @@ class RevisionPage(webapp.RequestHandler):
     for revision in revisions:
         text = cgi.escape(revision.content)
         if len(prev) > 0:
-            revision.diff = db.Text(distance(text, prev))
+            dist = distance(text, prev)
+            #diff = dist.replace("\n", "<br>")
+            diff = dist.replace("&para;", "")
+            revision.diff = db.Text(diff)
             revisions2.append(revision)
         else:
             last_text = text
