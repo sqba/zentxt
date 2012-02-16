@@ -64,6 +64,7 @@ class RevisionPage(webapp.RequestHandler):
             dist = distance(text, prev)
             #diff = dist.replace("\n", "<br>")
             diff = dist.replace("&para;", "")
+            diff = diff.replace("<br>", "\n")
             revision.diff = db.Text(diff)
             revisions2.append(revision)
         else:
