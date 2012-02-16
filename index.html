@@ -16,6 +16,39 @@ body {
 			navigation: true
 		});
 	});
+//http://stackoverflow.com/questions/646415/jquery-accordion-and-loading-content-through-ajax
+  function OnChange(event, ui) {
+    var active = $("#accordion").accordion('option','active')
+    console.log("Selected item: " + active );
+  }
+
+  function OnChangeStart(event, ui) {
+	var href = $(ui.newHeader.find("a")).attr("href");
+	console.log(href);
+	ui.newContent.html("test");
+	
+	//href = "localhost:8081"
+	//$.post(href, function(data) {
+	//	ui.newHeader.next("div").html(data);
+	//});
+
+	//ui.newHeader.next("div").html("http://www.google.com");
+	//ui.newContent.innerHMTL = "test";
+	//console.log(ui.newContent.html());
+        //if(ui.newContent.html()!=""){
+	        //ui.newContent.load("http://www.google.com");
+        //}
+  }
+
+  $(function() {
+    
+    $("#accordion").accordion({
+      change : OnChange,
+      changestart: OnChangeStart
+    });
+    
+  });
+
         </script>
 
 		<div id="guser" style="padding: 0pt 0pt 4px; font-size: 84%;" width="100%" align="right">
