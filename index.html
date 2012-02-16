@@ -10,9 +10,12 @@ body {
         <script src="js/jquery-1.7.1.js"></script>
         <script src="js/jquery-ui-1.8.17.custom.min.js"></script>
         <script>
-$(function() {
-    $( "#accordion" ).accordion();
-});
+	$(function() {
+		$( "#accordion" ).accordion({
+			autoHeight: false,
+			navigation: true
+		});
+	});
         </script>
 
 		<div id="guser" style="padding: 0pt 0pt 4px; font-size: 84%;" width="100%" align="right">
