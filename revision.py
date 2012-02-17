@@ -1,15 +1,7 @@
-import cgi
-import os
-import urllib
-
-from google.appengine.ext.webapp import template
-
 from google.appengine.ext import db
-from google.appengine.api import users
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp.util import run_wsgi_app
 
 from models import File, Revision
+from base import BasePage
 
 import diff_match_patch as dmp_module
 
@@ -24,7 +16,7 @@ def distance (sx, sy):
     return dmp.diff_prettyHtml(diffs)
 
 
-class RevisionPage(webapp.RequestHandler):
+class RevisionPage(BasePage):
 
     # Get specific revision by ID
     def get_rev(self, id):
@@ -42,11 +34,6 @@ class RevisionPage(webapp.RequestHandler):
         return prev
 
     def get_revision(self):
-        user = users.get_current_user()
-        if not user:
-            self.redirect(users.create_login_url(self.request.uri))
-            return
-
         rev = self.get_rev( self.request.get("id") )
         if rev is None:
             return
@@ -59,4 +46,6 @@ class RevisionPage(webapp.RequestHandler):
         self.response.out.write(diff)
 
     def get(self):
+        if not self.check_user():
+            return
         self.get_revision()
