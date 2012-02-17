@@ -32,7 +32,7 @@ body {
 	//href = "localhost:8081"
 	$.post(href, function(data) {
 		//console.log(href);
-		ui.newHeader.next("div").html(data);
+		ui.newHeader.next("div").html("<pre>" + data + "</pre>");
 	});
 
 	//ui.newHeader.next("div").html("http://www.google.com");
