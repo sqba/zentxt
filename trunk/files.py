@@ -17,18 +17,17 @@ class FilesPage(webapp.RequestHandler):
             return
         files = db.GqlQuery("SELECT * FROM File WHERE author = :1 LIMIT 50", user)
         if files.count() > 0:
-            self.redirect('/file?' + urllib.urlencode({'file_id': files[0].key()}))
+            self.redirect('/file?' + urllib.urlencode({'id': files[0].key()}))
         else:
             file_id = self.create_file("New File")
-            self.redirect('/file?' + urllib.urlencode({'file_id': file_id}))
+            self.redirect('/file?' + urllib.urlencode({'id': file_id}))
 
     def create_file(self, filename):
-        guestbook_name = self.request.get('guestbook_name')
         file = File()
         file.author = users.get_current_user()
         file.name = filename
         key = file.put()
-        self.redirect('/file?' + urllib.urlencode({'file_id': key}))
+        self.redirect('/file?' + urllib.urlencode({'id': key}))
         return key
 
     def get(self):

@@ -19,27 +19,20 @@
                 });
             });
 
-            /*function OnChange(event, ui) {
-                //var active = $("#accordion").accordion('option','active')
-                //console.log("Selected item: " + active );
-            }*/
-
             function OnChangeStart(event, ui) {
                 var href = $(ui.newHeader.find("a")).attr("href");
-                if("#" == href)
-                    return;
-
-                console.log(ui.newContent.html());
-                if(ui.newContent.html() != "")
-                    return;
-                $.post(href, function(data) {
-                    ui.newHeader.next("div").html("<pre>" + data + "</pre>");
-                });
+                if("#" != href) {
+                    console.log(ui.newContent.html());
+                    if(ui.newContent.html() == "") {
+                        $.get(href, function(data) {
+                            ui.newHeader.next("div").html("<pre>" + data + "</pre>");
+                        });
+                    }
+                }
             }
 
             $(function() {
                 $("#accordion").accordion({
-                  //change : OnChange,
                   changestart: OnChangeStart
                 });
             });
@@ -79,9 +72,9 @@
         <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
             <p>
                 <form id="save" action="/save" method="post">
-                    <input type="hidden" name="file_id" value="{{ file_id }}">
+                    <input type="hidden" name="id" value="{{ file_id }}">
                     <div>
-			<textarea name="content" rows="30" style="width:100%">{{ last_text }}</textarea>
+			<textarea name="content" rows="30" style="width:100%">{{ file_text }}</textarea>
 		    </div>
                     <div align="right"><input type="submit" value="Save"></div>
                 </form>
@@ -90,7 +83,7 @@
 
         {% for revision in revisions %}
             <h3 class="ui-accordion-header ui-helper-reset ui-state-active ui-corner-top">
-                <a href="rev?rev_id={{ revision.key }}">{{ revision.date|date:"l, F d Y, h:m:s" }}</a>
+                <a href="rev?id={{ revision.key }}">{{ revision.date|date:"l, F d Y, h:m:s" }}</a>
             </h3>
             <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom"></div>
         {% endfor %}

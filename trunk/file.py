@@ -15,10 +15,10 @@ from models import File, Revision
 class FilePage(webapp.RequestHandler):
 
     def show_revisions(self):
-        file_id = self.request.get("file_id")
+        file_id = self.request.get("id")
         user = users.get_current_user()
 
-        last_text = ""
+        file_text = ""
         revisions2 = []
 
         key_object = db.Key(file_id)
@@ -33,21 +33,20 @@ class FilePage(webapp.RequestHandler):
         query = Revision.gql("WHERE file = :1 ORDER BY date DESC", file)
         revisions = query.fetch(1)
         if len(revisions) > 0:
-            last_text = cgi.escape(revisions[0].content)
+            file_text = cgi.escape(revisions[0].content)
             last_date = revisions[0].date
 
             query = Revision.gql("WHERE file = :1 and date < :2 ORDER BY date DESC", file, last_date)
             revisions = query.fetch(100)
         else:
-            last_text = "Welcome to ZenTxt!"
+            file_text = "Welcome to ZenTxt!"
             revisions = []
 
         template_values = {
             'user' : user,
             'file_id' : file_id,
             'revisions' : revisions,
-            'last_text' : last_text,
-            'file_id' : file_id,
+            'file_text' : file_text
         }
 
         path = os.path.join(os.path.dirname(__file__), 'file.html')
@@ -57,23 +56,20 @@ class FilePage(webapp.RequestHandler):
         user = users.get_current_user()
         if not user:
             self.redirect(users.create_login_url(self.request.uri))
-        else:
-            self.show_revisions()
+            return
+        self.show_revisions()
 
     def post(self):
         user = users.get_current_user()
         if not user:
             self.redirect(users.create_login_url(self.request.uri))
             return
-        # We set the same parent key on the 'Revision' to ensure each revision is in
-        # the same entity group. Queries across the single entity group will be
-        # consistent. However, the write rate to a single entity group should
-        # be limited to ~1/second.
+
         revision = Revision()
 
         #revision.author = users.get_current_user()
         revision.content = self.request.get('content')
-        file_id = self.request.get("file_id")
+        file_id = self.request.get("id")
         key_object = db.Key(file_id)
         query = File.gql("WHERE __key__ = :1", key_object)
         entities = query.fetch(1)
@@ -87,4 +83,4 @@ class FilePage(webapp.RequestHandler):
             if revision.content != last_text:
                 revision.put()
 
-        self.redirect('/file?' + urllib.urlencode({'file_id': file_id}))
+        self.redirect('/file?' + urllib.urlencode({'id': file_id}))

@@ -26,31 +26,37 @@ def distance (sx, sy):
 
 class RevisionPage(webapp.RequestHandler):
 
+    # Get specific revision by ID
+    def get_rev(self, id):
+        rev_key = db.Key(id)
+        query = Revision.gql("WHERE __key__ = :1", rev_key)
+        entities = query.fetch(1)
+        if len(entities) == 0:
+            return None
+        return entities[0]
+
+    # Get revision before
+    def get_prev(self, rev):
+        q = Revision.all().filter('date >', rev.date)
+        prev = q.get()
+        return prev
+
     def get_revision(self):
         user = users.get_current_user()
         if not user:
             self.redirect(users.create_login_url(self.request.uri))
             return
 
-        rev_id = self.request.get("rev_id")
-        key_object = db.Key(rev_id)
-        query = Revision.gql("WHERE __key__ = :1", key_object)
-        entities = query.fetch(1)
-        revision = entities[0]
-        text = revision.content
+        rev = self.get_rev( self.request.get("id") )
+        if rev is None:
+            return
 
-        q = Revision.all().filter('date >', revision.date)
-        tmp = q.get()
-        if tmp is None:
-			return
-        prev = tmp.content
-            
-        diff = distance(text, prev)
-        diff = diff.replace("&para;", "")
+        prev = self.get_prev( rev )
+        if prev is None:
+            return
+
+        diff = distance(rev.content, prev.content).replace("&para;", "")
         self.response.out.write(diff)
 
     def get(self):
-        self.get_revision()
-        
-    def post(self):
         self.get_revision()
