@@ -35,6 +35,7 @@ class FilePage(BasePage):
             file.put()
         else:
             if self.get_file_permission(file) < base.ACCESS_READ:
+                self.redirect('/')
                 return
 
         head = file.head
