@@ -34,27 +34,23 @@ class FilePage(webapp.RequestHandler):
 
     #revisions = db.GqlQuery("SELECT * FROM Revision WHERE ANCESTOR IS :1 AND author = :2 ORDER BY date DESC LIMIT 50", guestbook_key(guestbook_name), user)
     #revisions = db.GqlQuery("SELECT * FROM Revision WHERE file = :1 ORDER BY date DESC LIMIT 50", file)
-    query = Revision.gql("WHERE file = :1 ORDER BY date DESC", file)
-    revisions = query.fetch(5)
 
-    prev = ""
-    for revision in revisions:
-        text = cgi.escape(revision.content)
-        if len(prev) > 0:
-            dist = distance(text, prev)
-            #diff = dist.replace("\n", "<br>")
-            diff = dist.replace("&para;", "")
-            diff = diff.replace("<br>", "\n")
-            revision.diff = db.Text(diff)
-            revisions2.append(revision)
-        else:
-           last_text = text
-        prev = text
+    query = Revision.gql("WHERE file = :1 ORDER BY date DESC", file)
+    revisions = query.fetch(1)
+    if len(revisions) > 0:
+        last_text = cgi.escape(revisions[0].content)
+        last_date = revisions[0].date
+
+        query = Revision.gql("WHERE file = :1 and date < :2 ORDER BY date DESC", file, last_date)
+        revisions = query.fetch(100)
+    else:
+        last_text = "Welcome to ZenTxt!"
+        revisions = []
 
     template_values = {
       'user' : user,
       'file_id' : file_id,
-      'revisions' : revisions2,
+      'revisions' : revisions,
       'last_text' : last_text,
       'file_id' : file_id,
     }
