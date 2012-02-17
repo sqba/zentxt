@@ -1,3 +1,5 @@
+import urllib
+
 from google.appengine.ext import db
 
 from models import File, Revision
@@ -32,3 +34,19 @@ class RevisionPage(BasePage):
 
         diff = self.distance(prev.content, rev.content).replace("&para;", "")
         self.response.out.write(diff)
+
+    def post(self):
+        if not self.check_user():
+            return
+
+        rev = self.get_revision_by_id( self.request.get("id") )
+        if rev is None:
+            self.response.out.write("rev not found")
+            return
+
+        file = rev.file
+        file.head = rev
+        file_id = file.put()
+        
+        self.redirect('/file?' + urllib.urlencode({'id': file_id}))
+
