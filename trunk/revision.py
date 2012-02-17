@@ -4,6 +4,7 @@ from google.appengine.ext import db
 
 from models import File, Revision
 from base import BasePage
+import base
 
 import diff_match_patch as dmp_module
 
@@ -19,12 +20,16 @@ class RevisionPage(BasePage):
         return dmp.diff_prettyHtml(diffs)
 
     def get(self):
-        if not self.check_user():
-            return
+#        if not self.check_user():
+#            return
 
         rev = self.get_revision_by_id( self.request.get("id") )
         if rev is None:
             self.response.out.write("rev not found")
+            return
+        
+        if self.get_revision_permission(rev) < base.ACCESS_READ:
+            self.response.out.write("permission denied")
             return
 
         prev = rev.prev
@@ -37,12 +42,16 @@ class RevisionPage(BasePage):
         self.response.out.write(diff)
 
     def post(self):
-        if not self.check_user():
-            return
+#        if not self.check_user():
+#            return
 
         rev = self.get_revision_by_id( self.request.get("id") )
         if rev is None:
             self.response.out.write("rev not found")
+            return
+
+        if self.get_revision_permission(rev) < base.ACCESS_WRITE:
+            self.response.out.write("permission denied")
             return
 
         file = rev.file
