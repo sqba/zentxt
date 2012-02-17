@@ -1,79 +1,67 @@
 <html>
     <body>
         <link rel="stylesheet" href="css/overcast/jquery-ui-1.8.17.custom.css">
+
         <style type="text/css">
-body {
-    font-size: 62.5%;
-}
+            body {
+                font-size: 62.5%;
+            }
         </style>
 
         <script src="js/jquery-1.7.1.js"></script>
         <script src="js/jquery-ui-1.8.17.custom.min.js"></script>
         <script>
-	$(function() {
-		$( "#accordion" ).accordion({
-			autoHeight: false,
-			//navigation: true,
-            //collapsible: true
-		});
-	});
-//http://stackoverflow.com/questions/646415/jquery-accordion-and-loading-content-through-ajax
-  function OnChange(event, ui) {
-    //var active = $("#accordion").accordion('option','active')
-    //console.log("Selected item: " + active );
-  }
+            $(function() {
+                $( "#accordion" ).accordion({
+                    autoHeight: false,
+                    //navigation: true,
+                    //collapsible: true
+                });
+            });
 
-  function OnChangeStart(event, ui) {
-	var href = $(ui.newHeader.find("a")).attr("href");
-    if("#" == href)
-        return;
-	//console.log(href);
-	//ui.newContent.html("test");
-	
-	//href = "localhost:8081"
-    console.log(ui.newContent.html());
-    if(ui.newContent.html() != "")
-        return;
-	$.post(href, function(data) {
-		//console.log(href);
-		ui.newHeader.next("div").html("<pre>" + data + "</pre>");
-	});
+            /*function OnChange(event, ui) {
+                //var active = $("#accordion").accordion('option','active')
+                //console.log("Selected item: " + active );
+            }*/
 
-	//ui.newHeader.next("div").html("http://www.google.com");
-	//ui.newContent.innerHMTL = "test";
-	//console.log(ui.newContent.html());
-        //if(ui.newContent.html()!=""){
-	        //ui.newContent.load("http://www.google.com");
-        //}
-  }
+            function OnChangeStart(event, ui) {
+                var href = $(ui.newHeader.find("a")).attr("href");
+                if("#" == href)
+                    return;
 
-  $(function() {
-    
-    $("#accordion").accordion({
-      change : OnChange,
-      changestart: OnChangeStart
-    });
-    
-  });
+                console.log(ui.newContent.html());
+                if(ui.newContent.html() != "")
+                    return;
+                $.post(href, function(data) {
+                    ui.newHeader.next("div").html("<pre>" + data + "</pre>");
+                });
+            }
 
-$.ctrl = function(key, callback, args) {
-    var isCtrl = false;
-    $(document).keydown(function(e) {
-        if(!args) args=[]; // IE barks when args is null
+            $(function() {
+                $("#accordion").accordion({
+                  //change : OnChange,
+                  changestart: OnChangeStart
+                });
+            });
 
-        if(e.ctrlKey) isCtrl = true;
-        if(e.keyCode == key.charCodeAt(0) && isCtrl) {
-            callback.apply(this, args);
-            return false;
-        }
-    }).keyup(function(e) {
-        if(e.ctrlKey) isCtrl = false;
-    });
-};
+            $.ctrl = function(key, callback, args) {
+                var isCtrl = false;
+                $(document).keydown(function(e) {
+                    if(!args) args=[]; // IE barks when args is null
 
-$.ctrl('S', function() {
-    document.forms["save"].submit();
-});
+                    if(e.ctrlKey) isCtrl = true;
+                    if(e.keyCode == key.charCodeAt(0) && isCtrl) {
+                        callback.apply(this, args);
+                        return false;
+                    }
+                }).keyup(function(e) {
+                    if(e.ctrlKey) isCtrl = false;
+                });
+            };
+
+            $.ctrl('S', function() {
+                document.forms["save"].submit();
+            });
 
         </script>
 
@@ -83,11 +71,11 @@ $.ctrl('S', function() {
 			</nobr>
 		</div>
 
-
         <div id="accordion" class="ui-accordion ui-widget ui-helper-reset">
-         <h3 class="ui-accordion-header ui-helper-reset ui-state-active ui-corner-top">
+            <h3 class="ui-accordion-header ui-helper-reset ui-state-active ui-corner-top">
             <a href="#">Edit</a>
         </h3>
+
         <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
             <p>
                 <form id="save" action="/save" method="post">
@@ -99,11 +87,13 @@ $.ctrl('S', function() {
                 </form>
             </p>
         </div>
-       {% for revision in revisions %}
+
+        {% for revision in revisions %}
             <h3 class="ui-accordion-header ui-helper-reset ui-state-active ui-corner-top">
                 <a href="rev?rev_id={{ revision.key }}">{{ revision.date|date:"l, F d Y, h:m:s" }}</a>
             </h3>
             <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom"></div>
         {% endfor %}
-</body>
+
+    </body>
 </html>
