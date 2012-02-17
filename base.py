@@ -67,8 +67,8 @@ class BasePage(webapp.RequestHandler):
         entities = query.fetch(1)
         if len(entities) > 0:
             file = entities[0]
-            if self.get_file_permission(file):
-                return file
+            #if self.get_file_permission(file):
+            return file
         return None
 
     def get_revision_by_id(self, id):
