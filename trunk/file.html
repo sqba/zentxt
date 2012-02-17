@@ -13,7 +13,8 @@ body {
 	$(function() {
 		$( "#accordion" ).accordion({
 			autoHeight: false,
-			navigation: true
+			//navigation: true,
+            //collapsible: true
 		});
 	});
 //http://stackoverflow.com/questions/646415/jquery-accordion-and-loading-content-through-ajax
@@ -94,7 +95,7 @@ $.ctrl('S', function() {
                     <div>
 			<textarea name="content" rows="30" style="width:100%">{{ last_text }}</textarea>
 		    </div>
-                    <div><input type="submit" value="Save"></div>
+                    <div align="right"><input type="submit" value="Save"></div>
                 </form>
             </p>
         </div>
