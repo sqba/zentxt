@@ -13,3 +13,9 @@ class File(db.Model):
     author = db.UserProperty()
     name = db.StringProperty()
     head = db.ReferenceProperty(Revision)
+    read_access = db.UserProperty()
+
+class FilePermissions(db.Model):
+    _file = db.ReferenceProperty(File)
+    user = db.UserProperty()
+    access = db.IntegerProperty() #1-read, 2-write

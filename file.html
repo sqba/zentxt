@@ -59,10 +59,24 @@
             });
 
         </script>
+        
+		<div id="suggestions" style="padding: 0pt 0pt 4px; font-size: 84%;" width="100%" align="left">
+			<nobr>
+                {% if user %}
+                    <a href="/">Home</a>
+                {% endif %}
+				<a href="/suggestions">Suggestions</a>
+			</nobr>
+		</div>
 
 		<div id="guser" style="padding: 0pt 0pt 4px; font-size: 84%;" width="100%" align="right">
 			<nobr>
-				<b>{{ user }}</b>
+                {% if user %}
+                    <b>{{ user }}</b>
+                {% else %}
+                    <a href="{{ login_url }}">Login</a>
+                {% endif %}
+                
 			</nobr>
 		</div>
 
