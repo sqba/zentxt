@@ -48,9 +48,6 @@ class BasePage(webapp.RequestHandler):
                 self.response.out.write("file permission denied")
                 return ACCESS_NONE
 
-    def get_revision_permission(self, rev):
-        return self.get_file_permission(rev.file)
-
     def create_file(self, filename, user=None):
         file = File()
         if user is None:
@@ -77,6 +74,5 @@ class BasePage(webapp.RequestHandler):
         entities = query.fetch(1)
         if len(entities) > 0:
             rev = entities[0]
-            #if self.get_revision_permission(rev):
             return rev
         return None
