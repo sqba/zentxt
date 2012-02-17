@@ -13,6 +13,7 @@ class FilePage(BasePage):
 
     def get_revisions(self, file):
         query = Revision.gql("WHERE file = :1 ORDER BY date DESC", file)
+        #.filter('__key__ != :1', file.head.key())
         return query.fetch(100)
 
     def has_text_changed(self, file, text):
@@ -56,6 +57,9 @@ class FilePage(BasePage):
 
         file_id = self.request.get("id")
         file = self.get_file( file_id )
+        if file is None:
+            self.response.out.write(file_id + " not found")
+            return
         new_text = self.request.get('content')
 
         if self.has_text_changed(file, new_text):

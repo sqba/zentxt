@@ -29,7 +29,8 @@ class RevisionPage(BasePage):
 
         prev = rev.prev
         if prev is None:
-            self.response.out.write("prev not found")
+            #self.response.out.write("prev not found")
+            self.response.out.write(rev.content)
             return
 
         diff = self.distance(prev.content, rev.content).replace("&para;", "")
