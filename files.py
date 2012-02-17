@@ -13,7 +13,7 @@ class FilesPage(BasePage):
             self.redirect('/file?' + urllib.urlencode({'id': files[0].key()}))
         else:
             file_id = self.create_file("New File")
-            self.redirect('/file?' + urllib.urlencode({'id': file_id}))
+            #self.redirect('/file?' + urllib.urlencode({'id': file_id}))
 
     def get(self):
         if not self.check_user():
