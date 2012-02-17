@@ -7,14 +7,6 @@ from base import BasePage
 
 class FilesPage(BasePage):
 
-    def create_file(self, filename):
-        file = File()
-        file.author = self.get_current_user()
-        file.name = filename
-        key = file.put()
-        self.redirect('/file?' + urllib.urlencode({'id': key}))
-        return key
-
     def show_files(self):
         files = db.GqlQuery("SELECT * FROM File WHERE author = :1 LIMIT 50", self.get_current_user())
         if files.count() > 0:
