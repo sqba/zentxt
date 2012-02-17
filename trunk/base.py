@@ -5,7 +5,7 @@ from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 
-from models import File
+from models import File, Revision
 
 
 class BasePage(webapp.RequestHandler):
@@ -28,3 +28,20 @@ class BasePage(webapp.RequestHandler):
         key = file.put()
         self.redirect('/file?' + urllib.urlencode({'id': key}))
         return key
+
+    def get_file(self, id):
+        key_object = db.Key(id)
+        query = File.gql("WHERE __key__ = :1", key_object)
+        entities = query.fetch(1)
+        if len(entities) > 0:
+            return entities[0]
+        else:
+            return None
+
+    def get_revision_by_id(self, id):
+        rev_key = db.Key(id)
+        query = Revision.gql("WHERE __key__ = :1", rev_key)
+        entities = query.fetch(1)
+        if len(entities) == 0:
+            return None
+        return entities[0]
