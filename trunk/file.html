@@ -78,7 +78,7 @@ body {
         </div>
        {% for revision in revisions %}
             <h3 class="ui-accordion-header ui-helper-reset ui-state-active ui-corner-top">
-                <a href="rev?rev_id={{ revision.key }}">{{ revision.date|date:"l, F Y h:m:s" }}</a>
+                <a href="rev?rev_id={{ revision.key }}">{{ revision.date|date:"l, F Y, h:m:s" }}</a>
             </h3>
             <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
                 <p>
