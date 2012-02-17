@@ -55,6 +55,25 @@ body {
     
   });
 
+$.ctrl = function(key, callback, args) {
+    var isCtrl = false;
+    $(document).keydown(function(e) {
+        if(!args) args=[]; // IE barks when args is null
+
+        if(e.ctrlKey) isCtrl = true;
+        if(e.keyCode == key.charCodeAt(0) && isCtrl) {
+            callback.apply(this, args);
+            return false;
+        }
+    }).keyup(function(e) {
+        if(e.ctrlKey) isCtrl = false;
+    });
+};
+
+$.ctrl('S', function() {
+    document.forms["save"].submit();
+});
+
         </script>
 
 		<div id="guser" style="padding: 0pt 0pt 4px; font-size: 84%;" width="100%" align="right">
@@ -70,7 +89,7 @@ body {
         </h3>
         <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
             <p>
-                <form action="/save" method="post">
+                <form id="save" action="/save" method="post">
                     <input type="hidden" name="file_id" value="{{ file_id }}">
                     <div>
 			<textarea name="content" rows="30" style="width:100%">{{ last_text }}</textarea>
