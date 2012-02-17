@@ -40,12 +40,11 @@ class RevisionPage(webapp.RequestHandler):
         #prev = cgi.escape(tmp.content)
         prev = tmp.content
             
-        if len(text) > 0:
-            diff = distance(text, prev)
-            #diff = diff.replace("\n", "<br>")
-            diff = diff.replace("&para;", "")
-            #diff = diff.replace("<br>", "\n")
-            self.response.out.write(diff)
+        diff = distance(text, prev)
+        #diff = diff.replace("\n", "<br>")
+        diff = diff.replace("&para;", "")
+        #diff = diff.replace("<br>", "\n")
+        self.response.out.write(diff)
 
     def get(self):
         self.get_revision()
