@@ -3,14 +3,13 @@ import wsgiref.handlers
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 
-from files import FilesPage, HomePage, SuggestionsPage
+from files import HomePage, SuggestionsPage
 from file import FilePage
 from revision import RevisionPage
 
 
 application = webapp.WSGIApplication([
-    ('/', FilesPage),
-    ('/home', HomePage),
+    ('/', HomePage),
     ('/file', FilePage),
     ('/save', FilePage),
     ('/rev', RevisionPage),
