@@ -27,7 +27,8 @@ class RevisionPage(webapp.RequestHandler):
         query = Revision.gql("WHERE __key__ = :1", key_object)
         entities = query.fetch(1)
         revision = entities[0]
-        text = cgi.escape(revision.content)
+        #text = cgi.escape(revision.content)
+        text = revision.content
         
         #self.response.out.write(text)
         #return
@@ -36,7 +37,8 @@ class RevisionPage(webapp.RequestHandler):
         tmp = q.get()
         if tmp is None:
 			return
-        prev = cgi.escape(tmp.content)
+        #prev = cgi.escape(tmp.content)
+        prev = tmp.content
             
         if len(text) > 0:
             diff = distance(text, prev)

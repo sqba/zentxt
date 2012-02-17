@@ -15,6 +15,7 @@ from diff import distance
 
 
 class FilePage(webapp.RequestHandler):
+
   def show_revisions(self):
 #    guestbook_name=self.request.get('guestbook_name')
     file_id = self.request.get("file_id")
@@ -84,5 +85,13 @@ class FilePage(webapp.RequestHandler):
     query = File.gql("WHERE __key__ = :1", key_object)
     entities = query.fetch(1)
     revision.file = entities[0]
-    revision.put()
+
+    # Avoid saving same text
+    query = Revision.gql("WHERE file = :1 ORDER BY date DESC", revision.file)
+    revisions = query.fetch(1)
+    if len(revisions) > 0:
+        last_text = revisions[0].content
+        if revision.content != last_text:
+            revision.put()
+
     self.redirect('/file?' + urllib.urlencode({'file_id': file_id}))
