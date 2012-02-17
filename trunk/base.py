@@ -30,8 +30,7 @@ class BasePage(webapp.RequestHandler):
         return key
 
     def get_file(self, id):
-        key_object = db.Key(id)
-        query = File.gql("WHERE __key__ = :1", key_object)
+        query = File.gql("WHERE __key__ = :1 AND author = :2", db.Key(id), self.get_current_user())
         entities = query.fetch(1)
         if len(entities) > 0:
             return entities[0]
@@ -40,7 +39,7 @@ class BasePage(webapp.RequestHandler):
 
     def get_revision_by_id(self, id):
         rev_key = db.Key(id)
-        query = Revision.gql("WHERE __key__ = :1", rev_key)
+        query = Revision.gql("WHERE __key__ = :1 AND author = :2", db.Key(id), self.get_current_user())
         entities = query.fetch(1)
         if len(entities) == 0:
             return None

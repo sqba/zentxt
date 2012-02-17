@@ -12,7 +12,7 @@ from base import BasePage
 class FilePage(BasePage):
 
     def get_revisions(self, file):
-        query = Revision.gql("WHERE file = :1 ORDER BY date DESC", file)
+        query = Revision.gql("WHERE file = :1 AND author = :2 ORDER BY date DESC", file, self.get_current_user())
         #.filter('__key__ != :1', file.head.key())
         return query.fetch(100)
 
