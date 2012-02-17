@@ -58,26 +58,12 @@ class FilePage(BasePage):
         path = os.path.join(os.path.dirname(__file__), 'file.html')
         self.response.out.write(template.render(path, template_values))
 
-    def is_text_changed(self, file, text):
+    def has_text_changed(self, file, text):
         head = self.get_head( file )
         if not head is None:
-            return (text == head.content)
+            return (text != head.content)
         else:
-            return False
-
-    def save_revision(self):
-        file_id = self.request.get("id")
-        file = self.get_file( file_id )
-        new_text = self.request.get('content')
-
-        if not self.is_text_changed(file, new_text):
-            revision = Revision()
-            revision.author     = self.get_current_user()
-            revision.content    = new_text
-            revision.file       = file
-            revision.put()
-
-        self.redirect('/file?' + urllib.urlencode({'id': file_id}))
+            return True
 
     def get(self):
         if not self.check_user():
@@ -87,4 +73,16 @@ class FilePage(BasePage):
     def post(self):
         if not self.check_user():
             return
-        self.save_revision()
+
+        file_id = self.request.get("id")
+        file = self.get_file( file_id )
+        new_text = self.request.get('content')
+
+        if self.has_text_changed(file, new_text):
+            revision = Revision()
+            revision.author     = self.get_current_user()
+            revision.content    = new_text
+            revision.file       = file
+            revision.put()
+
+        self.redirect('/file?' + urllib.urlencode({'id': file_id}))

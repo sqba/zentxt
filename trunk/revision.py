@@ -18,8 +18,7 @@ def distance (sx, sy):
 
 class RevisionPage(BasePage):
 
-    # Get specific revision by ID
-    def get_rev(self, id):
+    def get_revision_by_id(self, id):
         rev_key = db.Key(id)
         query = Revision.gql("WHERE __key__ = :1", rev_key)
         entities = query.fetch(1)
@@ -27,25 +26,22 @@ class RevisionPage(BasePage):
             return None
         return entities[0]
 
-    # Get revision before
-    def get_prev(self, rev):
+    def get_previous_revision(self, rev):
         q = Revision.all().filter('date >', rev.date)
         prev = q.get()
         return prev
 
-    def get_revision(self):
-        rev = self.get_rev( self.request.get("id") )
+    def get(self):
+        if not self.check_user():
+            return
+
+        rev = self.get_revision_by_id( self.request.get("id") )
         if rev is None:
             return
 
-        prev = self.get_prev( rev )
+        prev = self.get_previous_revision( rev )
         if prev is None:
             return
 
         diff = distance(rev.content, prev.content).replace("&para;", "")
         self.response.out.write(diff)
-
-    def get(self):
-        if not self.check_user():
-            return
-        self.get_revision()
