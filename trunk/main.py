@@ -12,7 +12,8 @@ application = webapp.WSGIApplication([
     ('/', FilesPage),
     ('/file', FilePage),
     ('/save', FilePage),
-    ('/rev', RevisionPage)
+    ('/rev', RevisionPage),
+    ('/revert', RevisionPage)
 ], debug=True)
 
 

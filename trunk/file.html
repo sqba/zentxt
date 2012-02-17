@@ -22,10 +22,12 @@
             function OnChangeStart(event, ui) {
                 var href = $(ui.newHeader.find("a")).attr("href");
                 if("#" != href) {
-                    console.log(ui.newContent.html());
-                    if(ui.newContent.html() == "") {
+                    divobj = ui.newContent.find('.child');
+                    //console.log("html: " + divobj.html());
+                    if(divobj.html() == "") {
                         $.get(href, function(data) {
-                            ui.newHeader.next("div").html("<pre>" + data + "</pre>");
+                            //ui.newContent.find("div").html("<pre>" + data + "</pre>" + html);
+                            divobj.html("<pre>" + data + "</pre>");
                         });
                     }
                 }
@@ -85,7 +87,13 @@
             <h3 class="ui-accordion-header ui-helper-reset ui-state-active ui-corner-top">
                 <a href="rev?id={{ revision.key }}">{{ revision.date|date:"l, F d Y, h:m:s" }} by {{ revision.author }}</a>
             </h3>
-            <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom"></div>
+            <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+                <div class="child"></div>
+                <form id="revert" action="/revert" method="post">
+                    <input type="hidden" name="id" value="{{ revision.key }}">
+                    <div align="right"><input type="submit" value="Revert"></div>
+                </form>
+            </div>
         {% endfor %}
 
     </body>
