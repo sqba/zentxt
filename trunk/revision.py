@@ -27,10 +27,6 @@ class RevisionPage(BasePage):
         if rev is None:
             self.response.out.write("rev not found")
             return
-        
-        if self.get_revision_permission(rev) < base.ACCESS_READ:
-            self.response.out.write("permission denied")
-            return
 
         prev = rev.prev
         if prev is None:
@@ -48,10 +44,6 @@ class RevisionPage(BasePage):
         rev = self.get_revision_by_id( self.request.get("id") )
         if rev is None:
             self.response.out.write("rev not found")
-            return
-
-        if self.get_revision_permission(rev) < base.ACCESS_WRITE:
-            self.response.out.write("permission denied")
             return
 
         file = rev.file
