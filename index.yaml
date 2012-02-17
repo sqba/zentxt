@@ -40,6 +40,13 @@ indexes:
 
 - kind: Revision
   properties:
+  - name: author
+  - name: file
+  - name: date
+    direction: desc
+
+- kind: Revision
+  properties:
   - name: file
   - name: date
 
