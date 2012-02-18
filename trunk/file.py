@@ -85,3 +85,4 @@ class FilePage(BasePage):
             file.put()
 
         self.redirect('/file?' + urllib.urlencode({'id': file_id}))
+

@@ -15,7 +15,8 @@ class FilesPage(BasePage):
 
     def get(self):
         if not self.check_user(False):
-            self.logged_user_home()
+            #self.logged_user_home()
+            self.redirect('/')
             return
 
         query = File.gql("WHERE author = :1", self.get_current_user())

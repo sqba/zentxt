@@ -23,7 +23,7 @@ class HomePage(BasePage):
 
     def anon_user_page(self):
         template_values = {
-            'user'      : self.get_current_user(),
+            'user'      : "Anonymous",
             'login_url' : users.create_login_url(self.request.uri)
         }
         path = os.path.join(os.path.dirname(__file__), 'home.html')
@@ -45,3 +45,4 @@ class SuggestionsPage(BasePage):
             file_id = self.create_file("Suggestions", user)
             #self.redirect('/file?' + urllib.urlencode({'id': file_id}))
         self.redirect('/file?' + urllib.urlencode({'id': file_id}))
+
