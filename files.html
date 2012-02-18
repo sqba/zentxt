@@ -1,0 +1,80 @@
+<html>
+    <body>
+        <link rel="stylesheet" href="css/overcast/jquery-ui-1.8.17.custom.css">
+
+        <style type="text/css">
+            body {
+                font-size: 62.5%;
+            }
+        </style>
+
+        <script src="js/jquery-1.7.1.js"></script>
+        <script src="js/jquery-ui-1.8.17.custom.min.js"></script>
+        <script>
+            $(function() {
+                $( "#accordion" ).accordion({
+                    autoHeight: false,
+                    //navigation: true,
+                    //collapsible: true
+                });
+            });
+
+            function OnChangeStart(event, ui) {
+                var href = $(ui.newHeader.find("a")).attr("href");
+                console.log(href);
+                if("#" != href) {
+                    divobj = ui.newContent.find('.child');
+                    //console.log("html: " + divobj.html());
+                    if(divobj.html() == "") {
+                        $.get(href, function(data) {
+                            //ui.newContent.find("div").html("<pre>" + data + "</pre>" + html);
+                            divobj.html("<pre>" + data + "</pre>");
+                        });
+                    }
+                }
+            }
+
+            $(function() {
+                $("#accordion").accordion({
+                  changestart: OnChangeStart
+                });
+            });
+
+        </script>
+        
+		<div id="suggestions" style="padding: 0pt 0pt 4px; font-size: 84%;" width="100%" align="left">
+			<nobr>
+                {% if user %}
+                    <a href="/">Home</a>
+                {% endif %}
+				<a href="/suggestions">Suggestions</a>
+			</nobr>
+		</div>
+
+		<div id="guser" style="padding: 0pt 0pt 4px; font-size: 84%;" width="100%" align="right">
+			<nobr>
+				{% if user %}
+				    <b>{{ user }}</b>
+				{% else %}
+                    <a href="{{ login_url }}">Login</a>
+                {% endif %}
+			</nobr>
+		</div>
+
+        <div id="accordion" class="ui-accordion ui-widget ui-helper-reset">
+            {% for file in files %}
+                <h3 class="ui-accordion-header ui-helper-reset ui-state-active ui-corner-top">
+                    <a href="rev?id={{ file.head.key }}">{{ file.name }}, last edited on {{ file.head.date|date:"l, F d Y, h:m:s" }} by {{ file.head.author }}</a>
+                </h3>
+                <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+                    <div class="child">{% ifequal file.head head %} {{ head.content }} {% endifequal %}</div>
+                    <form id="open" action="/file" method="get">
+                        <input type="hidden" name="id" value="{{ file.key }}">
+                        <div align="right"><input type="submit" value="Edit"></div>
+                    </form>
+                </div>
+            {% endfor %}
+		</div>
+
+    </body>
+</html>
