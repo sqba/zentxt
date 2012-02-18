@@ -82,33 +82,32 @@
 
         <div id="accordion" class="ui-accordion ui-widget ui-helper-reset">
             <h3 class="ui-accordion-header ui-helper-reset ui-state-active ui-corner-top">
-            <a href="#">Edit</a>
-        </h3>
-
-        <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
-            <p>
-                <form id="save" action="/save" method="post">
-                    <input type="hidden" name="id" value="{{ file_id }}">
-                    <div>
-                        <textarea name="content" rows="30" style="width:100%">{{ file_text }}</textarea>
-                    </div>
-                    <div align="right"><input type="submit" value="Save"></div>
-                </form>
-            </p>
-        </div>
-
-        {% for revision in revisions %}
-            <h3 class="ui-accordion-header ui-helper-reset ui-state-active ui-corner-top">
-                <a href="rev?id={{ revision.key }}">{{ revision.date|date:"l, F d Y, h:m:s" }} by {{ revision.author }}</a>
+                <a href="#">Edit</a>
             </h3>
             <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
-                <div class="child"></div>
-                <form id="revert" action="/revert" method="post">
-                    <input type="hidden" name="id" value="{{ revision.key }}">
-                    <div align="right"><input type="submit" value="Revert"></div>
-                </form>
+                <p>
+                    <form id="save" action="/save" method="post">
+                        <input type="hidden" name="id" value="{{ file_id }}">
+                        <div>
+                            <textarea name="content" rows="30" style="width:100%">{{ file_text }}</textarea>
+                        </div>
+                        <div align="right"><input type="submit" value="Save"></div>
+                    </form>
+                </p>
             </div>
-        {% endfor %}
+            {% for revision in revisions %}
+                <h3 class="ui-accordion-header ui-helper-reset ui-state-active ui-corner-top">
+                    <a href="rev?id={{ revision.key }}">{{ revision.date|date:"l, F d Y, h:m:s" }} by {{ revision.author }}</a>
+                </h3>
+                <div class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom">
+                    <div class="child"></div>
+                    <form id="revert" action="/revert" method="post">
+                        <input type="hidden" name="id" value="{{ revision.key }}">
+                        <div align="right"><input type="submit" value="Revert"></div>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
 
     </body>
 </html>
