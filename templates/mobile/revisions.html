@@ -78,5 +78,32 @@
                 </div>
             </div><!-- /content -->
         </div><!-- /page -->
+
+        <div data-role="page" id="home">
+
+            <div data-role="header">
+                <h1>ZenTXT</h1>
+            </div><!-- /header -->
+
+            <div data-role="content" >
+                <a href="/suggestions">Suggestions</a>
+                <a href="/files">Files</a>
+                <a href="{{ login_url }}">Login</a>
+
+                <p><a href="#two" data-role="button">Show page "two"</a></p>
+                <p><a href="#popup"data-role="button" data-rel="dialog" data-transition="pop">Show page "popup" (as a dialog)</a></p>
+            </div><!-- /content -->
+
+            <div data-role="footer" data-theme="d">
+                <h4>Page Footer</h4>
+            </div><!-- /footer -->
+        </div><!-- /page -->
+
+        <div data-role="page" id="two" data-theme="a">
+        </div><!-- /page two -->
+
+        <div data-role="page" id="popup">
+        </div><!-- /page popup -->
+
     </body>
 </html>

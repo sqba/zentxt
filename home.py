@@ -26,7 +26,7 @@ class HomePage(BasePage):
             'user'      : "Anonymous",
             'login_url' : users.create_login_url(self.request.uri)
         }
-        path = os.path.join(os.path.dirname(__file__), 'home.html')
+        path = self.get_template_path( 'home.html' )
         self.response.out.write(template.render(path, template_values))
 
     def get(self):

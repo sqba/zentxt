@@ -54,7 +54,7 @@ class FilePage(BasePage):
             'login_url' : users.create_login_url(self.request.uri)
         }
 
-        path = os.path.join(os.path.dirname(__file__), 'file.html')
+        path = self.get_template_path( 'file.html' )
         self.response.out.write(template.render(path, template_values))
 
     def post(self):

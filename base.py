@@ -1,3 +1,4 @@
+import os
 import urllib
 
 from google.appengine.ext import db
@@ -76,3 +77,9 @@ class BasePage(webapp.RequestHandler):
             rev = entities[0]
             return rev
         return None
+
+    def get_template_path(self, filename):
+        template_path = os.path.join(os.path.dirname(__file__), "templates")
+        #template_path = os.path.join(template_path, "mobile")
+        template_path = os.path.join(template_path, "web")
+        return os.path.join(template_path, filename)
