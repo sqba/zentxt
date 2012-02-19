@@ -16,11 +16,9 @@
 
             <div data-role="content" class="ui-body ui-body-a">	
                 <ul data-role="listview" data-inset="true" data-filter="true">
-                    <li><a href="#">Acura</a></li>
-                    <li><a href="#">Audi</a></li>
-                    <li><a href="#">BMW</a></li>
-                    <li><a href="#">Cadillac</a></li>
-                    <li><a href="#">Ferrari</a></li>
+                    {% for file in files %}
+                        <li><a href="rev?id={{ file.head.key }}">{{ file.name }}, last edited on {{ file.head.date|date:"l, F d Y, h:m:s" }} by {{ file.head.author }}</a></li>
+                    {% endfor %}
                 </ul>
             </div><!-- /content -->
         </div><!-- /page -->

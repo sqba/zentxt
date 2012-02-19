@@ -19,7 +19,15 @@
                 <textarea name="textarea" id="textarea-a">
                 I'm a basic textarea. If this is pre-populated with content, the height will be automatically adjusted to fit without needing to scroll. That is a pretty handy usability feature.
                 </textarea>
+
+                <p><a href="#rename"data-role="button" data-rel="dialog" data-transition="pop">Rename</a></p>
             </div><!-- /content -->
         </div><!-- /page -->
+
+        <div data-role="page" id="rename">
+            <label for="basic">Text Input:</label>
+            <input type="text" name="name" id="basic" value=""  />
+            <p><a href="#one" data-rel="back" data-role="button" data-inline="true" data-icon="back">Back to page "one"</a></p>
+        </div><!-- /page rename -->
     </body>
 </html>
