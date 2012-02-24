@@ -14,12 +14,17 @@ from google.appengine.ext.webapp import template
 class HomePage(BasePage):
 
     def logged_user_home(self):
-        files = db.GqlQuery("SELECT * FROM File WHERE author = :1 LIMIT 50", self.get_current_user())
-        if files.count() > 0:
-            file_id = files[0].key()
-        else:
-            file_id = self.create_file("New File")
-        self.redirect('/file?' + urllib.urlencode({'id': files[0].key()}))
+#        files = db.GqlQuery("SELECT * FROM File WHERE author = :1 LIMIT 50", self.get_current_user())
+#        if files.count() > 0:
+#            file_id = files[0].key()
+#        else:
+#            file_id = self.create_file("New File")
+#        self.redirect('/file?' + urllib.urlencode({'id': files[0].key()}))
+        template_values = {
+            'user'      : self.get_current_user(),
+        }
+        path = self.get_template_path( 'home.html' )
+        self.response.out.write(template.render(path, template_values))
 
     def anon_user_page(self):
         template_values = {

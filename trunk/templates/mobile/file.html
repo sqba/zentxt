@@ -8,14 +8,13 @@
         <script src="js/jquery.mobile-1.0.1.min.js"></script>
     </head> 
     <body> 
-        <div data-role="page">
+        <div data-role="page" id="main">
 
             <div data-role="header">
                 <h1>Revisions</h1>
             </div><!-- /header -->
 
             <div data-role="content"class="ui-body ui-body-c">	
-                <label for="textarea-a">Textarea:</label>
                 <textarea name="textarea" id="textarea-a">
                 I'm a basic textarea. If this is pre-populated with content, the height will be automatically adjusted to fit without needing to scroll. That is a pretty handy usability feature.
                 </textarea>
@@ -25,9 +24,20 @@
         </div><!-- /page -->
 
         <div data-role="page" id="rename">
-            <label for="basic">Text Input:</label>
-            <input type="text" name="name" id="basic" value=""  />
-            <p><a href="#one" data-rel="back" data-role="button" data-inline="true" data-icon="back">Back to page "one"</a></p>
+
+            <div data-role="header" data-theme="e">
+                <h1>Rename</h1>
+            </div><!-- /header -->
+
+            <div data-role="content" data-theme="d">	
+                <h2>Rename</h2>
+                <input type="text" name="name" id="basic" value=""  />
+                <p><a href="#main" data-rel="back" data-role="button" data-inline="true" data-icon="back">Back to page "one"</a></p>	
+            </div><!-- /content -->
+            
+            <div data-role="footer">
+                <h4>Page Footer</h4>
+            </div><!-- /footer -->
         </div><!-- /page rename -->
     </body>
 </html>

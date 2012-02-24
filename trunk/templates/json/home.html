@@ -1,0 +1,59 @@
+<html>
+	<head> 
+        <title>ZenTXT</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1"> 
+        <link rel="stylesheet" href="js/jquery.mobile-1.0.1.min.css" />
+        <script src="js/jquery-1.7.1.min.js"></script>
+        <script src="js/jquery.mobile-1.0.1.min.js"></script>
+
+        <script>
+            function load_files() {
+                var url="/files";
+                $.getJSON(url, function(data) {
+                    $.each(data.files, function(item, arr) {
+                        $.each(arr, function(index, file) {
+                            //console.log(file);
+                            url="/file?id=" + file.key
+                            $("#file_list").append('<li><a href="'+url+'">'+file.name+'</a></li>');
+                        });
+                    });
+                });
+            }
+
+            function OnLoad()
+            {
+                load_files();
+            }
+        </script>
+
+    </head> 
+
+    <body onload="OnLoad()">
+
+		<div id="suggestions" style="padding: 0pt 0pt 4px; font-size: 84%;" width="100%" align="left">
+			<nobr>
+                {% if user %}
+                    <a href="/">Home</a>
+                    <a href="/files">Files</a>
+                {% endif %}
+				<a href="/suggestions">Suggestions</a>
+			</nobr>
+		</div>
+
+		<div id="guser" style="padding: 0pt 0pt 4px; font-size: 84%;" width="100%" align="right">
+			<nobr>
+                {% if user %}
+                    <b>{{ user }}</b>
+                {% else %}
+                    <a href="{{ login_url }}">Login</a>
+                {% endif %}
+                
+			</nobr>
+		</div>
+
+        <ul id="file_list"></ul>
+
+    </body>
+</html>
+

@@ -1,0 +1,11 @@
+{"files": {
+    "file": [
+        {% for file in files %}
+            {"key": "{{ file.key }}",
+            "name": "{{ file.name }}",
+            "date": "{{ file.head.date|date:"l, F d Y, h:m:s" }}",
+            "author": "{{ file.author }}" },
+        {% endfor %}
+        {"key": "", "name": "", "date": "", "author": "" }
+]}}
+
