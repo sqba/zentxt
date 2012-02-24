@@ -4,7 +4,7 @@ import urllib
 from google.appengine.ext import db
 from google.appengine.api import users
 
-from models import File
+from models import File, Revision
 from base import BasePage
 import base
 
