@@ -63,7 +63,7 @@ class BasePage(webapp.RequestHandler):
         file.name = filename
         key = file.put()
         self.create_permission(file, file.author, ACCESS_WRITE)
-        self.redirect('/file?' + urllib.urlencode({'id': key}))
+        #self.redirect('/file?' + urllib.urlencode({'id': key}))
         return key
 
     def get_file(self, id):
