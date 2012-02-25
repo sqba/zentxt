@@ -132,12 +132,44 @@
                 });
             };
 
+            function save_file_content() {
+                //alert(get_file_id());
+                //alert($("#content").text());
+                var new_content = $("#content").val();
+                //alert(new_content);
+                //console.log(new_content);
+                $.post("/save", { id: get_file_id(), content: new_content },
+                   function(data) {
+                     //alert("Data Loaded: " + data);
+                   });
+            }
+
             $.ctrl('S', function() {
-                document.forms["save"].submit();
+                //document.forms["save"].submit();
+                save_file_content();
             });
+
+            $( "#save" ).live( "click", function(event, ui) { save_file_content(); });
+
+            function create_new_file() {
+                var file_name = $("#file_name").val();
+                //alert(file_name);
+                $.post("/newfile", { name: file_name },
+                   function(data) {
+                        //alert("Data Loaded: " + data);
+                        set_file_id(data);
+                        $('#new_file').dialog ('close');
+                        $('#file').dialog ('open');
+                   });
+            }
+
+
+            function load() {
+                $( "#create_new_file" ).bind( "click", function(event, ui) { create_new_file(); });
+            }
         </script>
     </head> 
-    <body>
+    <body onload="load()">
         <div data-role="page" id="files" data-theme="a">
 	        <div data-role="header">
 		        <h1>Files</h1>
@@ -158,11 +190,13 @@
 		        <h1>File</h1>
 	        </div><!-- /header -->
 	        <div data-role="content" data-theme="a">
-                <form id="save" action="/save" method="post">
+                <!--form id="save" action="/save" method="post">
                     <input type="hidden" name="id" value="zzz" id="form_file_id">
                     <textarea name="content" id="content"></textarea>
                     <input type="submit" value="Save">
-                </form>
+                </form-->
+                <textarea name="content" id="content"></textarea>
+                <p><a id="save" data-role="button">Save Button</a></p>
                 <p><a href="#revisions" data-role="button">History</a></p>
                 <p><a href="#main" data-rel="back" data-role="button" data-inline="true" data-icon="back">Back to main page</a></p>
 	        </div><!-- /content -->
@@ -213,15 +247,17 @@
         NEW FILE PAGE
         -->
         <div data-role="page" id="new_file">
-            <div data-role="header" data-theme="e">
+            <div data-role="header" data-theme="a">
 	            <h1>New file</h1>
             </div><!-- /header -->
-            <div data-role="content" data-theme="d">	
+            <div data-role="content" data-theme="a">	
 	            <h2>Name</h2>
-                <form id="newfile" action="/newfile" method="post">
+                <!--form id="newfile" action="/newfile" method="post">
                     <input type="text" name="name" id="name" data-mini="true" />
                     <input type="submit" value="Create">
-                </form>
+                </form-->
+                <input type="text" name="name" id="file_name" data-mini="true" />
+                <p><a id="create_new_file" data-role="button">Create</a></p>
             </div><!-- /content -->
             <div data-role="footer">
 	            <h4>Page Footer</h4>
