@@ -41,6 +41,21 @@
                 }
             }
 
+            function add_collapsible_item(list_id, text, href, key, funcname) {
+                if(text.length > 0) {
+                    var ev = "onClick="+funcname+"('"+key+"');";
+                    //var el = "<li><a href='"+href+"'"+ev+">"+text+"</a></li>";
+                    var data="";
+	                var el = "<div data-role='collapsible' data-collapsed='false'><h3>"+text+"</h3><p>"+data+"</p></div>";
+
+                    //el.page();
+                    $(list_id).append(el);
+                    //$(list_id).collapsible-set('refresh');
+                    //$(list_id).selectmenu('refresh');
+                    $(list_id).trigger('create')
+                }
+            }
+
             function load_files() {
                 $("#file_list").children().remove();
                 var url="/files";
@@ -63,7 +78,7 @@
                     $.each(data.revision, function(index, revision) {
                         //console.log(file);
                         url="/rev?id=" + revision.key
-                        add_list_item('#rev_list', revision.date, "#revision", revision.key, "set_rev_id");
+                        add_collapsible_item('#rev_list', revision.date, "#revision", revision.key, "set_rev_id");
                     });
                 });
             }
@@ -131,7 +146,16 @@
 		        <h1>Revisions</h1>
 	        </div><!-- /header -->
 	        <div data-role="content" data-theme="a">	
-                <ul data-role="listview" data-inset="true" data-filter="true" id="rev_list"></ul>
+                <div data-role="collapsible-set" id="rev_list">
+	                <div data-role="collapsible" data-collapsed="false">
+	                <h3>Section 1</h3>
+	                <p>I'm the collapsible set content for section B.</p>
+	                </div>
+	                <div data-role="collapsible">
+	                <h3>Section 2</h3>
+	                <p>I'm the collapsible set content for section B.</p>
+	                </div>
+                </div>
                 <p><a href="#file" data-rel="back" data-role="button" data-inline="true" data-icon="back">Back to file</a></p>
 	        </div><!-- /content -->
 	        <div data-role="footer">
