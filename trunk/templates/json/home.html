@@ -8,7 +8,8 @@
         <script src="js/jquery.mobile-1.0.1.min.js"></script>
 
         <script>
-            var file_id="agpkZXZ-emVudHh0cgoLEgRGaWxlGAEM";
+            var file_id="";
+            var rev_id="";
 
             function set_file_id(id) {
                 file_id=id;
@@ -20,9 +21,19 @@
                 //return sessionstorage.getItem("fileid");
             }
 
-            function add_list_item(list_id, text, href, key) {
+            function set_rev_id(id) {
+                rev_id=id;
+                //sessionstorage.setItem("fileid", id);
+            }
+
+            function get_rev_id() {
+                return rev_id;
+                //return sessionstorage.getItem("fileid");
+            }
+
+            function add_list_item(list_id, text, href, key, funcname) {
                 if(text.length > 0) {
-                    var ev = "onClick=set_file_id('"+key+"');";
+                    var ev = "onClick="+funcname+"('"+key+"');";
                     var el = "<li><a href='"+href+"'"+ev+">"+text+"</a></li>";
                     //el.page();
                     $(list_id).append(el);
@@ -34,10 +45,11 @@
                 $("#file_list").children().remove();
                 var url="/files";
                 $.getJSON(url, function(data) {
+                    $("#file_list").children().remove();
                     $.each(data.file, function(index, file) {
                         //console.log(file);
                         url="/file?id=" + file.key
-                        add_list_item('#file_list', file.name, "#file", file.key);
+                        add_list_item('#file_list', file.name, "#file", file.key, "set_file_id");
                     });
                 });
             }
@@ -47,26 +59,28 @@
                 var url="/revisions?file=" + get_file_id();//file_id;
                 console.log(url);
                 $.getJSON(url, function(data) {
+                    $("#rev_list").children().remove();
                     $.each(data.revision, function(index, revision) {
                         //console.log(file);
                         url="/rev?id=" + revision.key
-                        add_list_item('#rev_list', revision.date, "#revision", revision.key);
+                        add_list_item('#rev_list', revision.date, "#revision", revision.key, "set_rev_id");
                     });
                 });
             }
 
             function load_file() {
+                $("#form_file_id").val(get_file_id());
                 var url="/file?id=" + get_file_id();
                 $.get(url, function(data) {
-                    $("#file_content").text(data);
+                    $("#content").text(data);
                 });
             }
 
             function load_revision() {
-                var url="/rev?id=" + get_file_id();
+                var url="/rev?id=" + get_rev_id();
                 console.log(url);
                 $.get(url, function(data) {
-                    $("#rev_content").text(data);
+                    $("#rev_content").html(data);
                 });
             }
 
@@ -128,10 +142,12 @@
 		        <h1>File</h1>
 	        </div><!-- /header -->
 
-	        <div data-role="content" data-theme="a">	
-                <textarea name="textarea" id="file_content">
-                I'm a basic textarea. If this is pre-populated with content, the height will be automatically adjusted to fit without needing to scroll. That is a pretty handy usability feature.
-                </textarea>
+	        <div data-role="content" data-theme="a">
+                <form id="save" action="/save" method="post">
+                    <input type="hidden" name="id" value="zzz" id="form_file_id">
+                    <textarea name="textarea" id="content"></textarea>
+                    <input type="submit" value="Save">
+                </form>
 	        </div><!-- /content -->
 
             <p><a href="#revisions" data-role="button">History</a></p>
