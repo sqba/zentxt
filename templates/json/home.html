@@ -8,26 +8,40 @@
         <script src="js/jquery.mobile-1.0.1.min.js"></script>
 
         <script>
+            function add_list_item(list_id, text, href) {
+                if(text.length > 0) {
+                    var el = '<li><a href="'+href+'">'+text+'</a></li>';
+                    //el.page();
+                    $("#file_list").append(el);
+                    $('#file_list').listview('refresh');
+                }
+            }
             function load_files() {
                 $("#file_list").children().remove();
                 var url="/files";
                 $.getJSON(url, function(data) {
-                    $.each(data.files, function(item, arr) {
-                        $.each(arr, function(index, file) {
-                            //console.log(file);
-                            url="/file?id=" + file.key
-                            $("#file_list").append('<li><a href="'+url+'">'+file.name+'</a></li>');
-                        });
+                    $.each(data.file, function(index, file) {
+                        //console.log(file);
+                        url="/file?id=" + file.key
+                        add_list_item('#file_list', file.name, url);
+                    });
+                });
+            }
+            function load_revisions() {
+                $("#file_list").children().remove();
+                var url="/revisions?file=" + "agpkZXZ-emVudHh0cgoLEgRGaWxlGAEM";
+                $.getJSON(url, function(data) {
+                    $.each(data.revision, function(index, revision) {
+                        //console.log(file);
+                        url="/rev?id=" + revision.key
+                        add_list_item('#file_list', revision.date, url);
                     });
                 });
             }
 
-            function OnLoad()
-            {
-                load_files();
-            }
-            $('#files').live('pageshow', function (event, ui) {
-                load_files();
+            $('#files').live('pageshow', function (event, data) {
+                load_revisions();
+                //load_files();
             });
         </script>
     </head> 
@@ -52,9 +66,26 @@
             </div><!-- /footer -->
         </div><!-- /page -->
 
-        <div data-role="page" id="files" data-theme="a" onload="OnLoad()">
-            <ul id="file_list"></ul>
-            <p><a href="#main" data-rel="back" data-role="button" data-inline="true" data-icon="back">Back to page "one"</a></p>
+        <div data-role="page" id="files" data-theme="a">
+	        <div data-role="header">
+		        <h1>Two</h1>
+	        </div><!-- /header -->
+
+	        <div data-role="content" data-theme="a">	
+		        <h2>Files</h2>
+                <ul data-role="listview" data-inset="true" data-filter="true" id="file_list">
+	                <li><a href="#">Acura</a></li>
+	                <li><a href="#">Audi</a></li>
+	                <li><a href="#">BMW</a></li>
+	                <li><a href="#">Cadillac</a></li>
+	                <li><a href="#">Ferrari</a></li>
+                </ul>
+                <p><a href="#main" data-rel="back" data-role="button" data-inline="true" data-icon="back">Back to page "one"</a></p>
+	        </div><!-- /content -->
+	
+	        <div data-role="footer">
+		        <h4>Page Footer</h4>
+	        </div><!-- /footer -->
         </div><!-- /page two -->
 
         <div data-role="page" id="popup">
