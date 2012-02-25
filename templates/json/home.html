@@ -41,21 +41,6 @@
                 }
             }
 
-            function add_collapsible_item(list_id, text, href, key, funcname) {
-                if(text.length > 0) {
-                    var ev = "onClick="+funcname+"('"+key+"');";
-                    //var el = "<li><a href='"+href+"'"+ev+">"+text+"</a></li>";
-                    var data="";
-	                var el = "<div data-role='collapsible' data-collapsed='false'><h3>"+text+"</h3><p>"+data+"</p></div>";
-
-                    //el.page();
-                    $(list_id).append(el);
-                    //$(list_id).collapsible-set('refresh');
-                    //$(list_id).selectmenu('refresh');
-                    $(list_id).trigger('create')
-                }
-            }
-
             function load_files() {
                 $("#file_list").children().remove();
                 var url="/files";
@@ -69,10 +54,33 @@
                 });
             }
 
+            function load_file() {
+                $("#form_file_id").val(get_file_id());
+                var url="/file?id=" + get_file_id();
+                $.get(url, function(data) {
+                    $("#content").text(data);
+                });
+            }
+
+            function add_collapsible_item(list_id, text, href, key, funcname) {
+                if(text.length > 0) {
+                    var ev = "onClick="+funcname+"('"+key+"');";
+                    //var el = "<li><a href='"+href+"'"+ev+">"+text+"</a></li>";
+                    //var data="zzz";
+	                var el = "<div data-role='collapsible' data-collapsed='true' id='"+key+"'><h3>"+text+"</h3><p></p></div>";
+
+                    //el.page();
+                    $(list_id).append(el);
+                    //$(list_id).collapsible-set('refresh');
+                    //$(list_id).selectmenu('refresh');
+                    $(list_id).trigger('create')
+                }
+            }
+
             function load_revisions() {
                 $("#rev_list").children().remove();
                 var url="/revisions?file=" + get_file_id();//file_id;
-                console.log(url);
+                //console.log(url);
                 $.getJSON(url, function(data) {
                     $("#rev_list").children().remove();
                     $.each(data.revision, function(index, revision) {
@@ -83,26 +91,50 @@
                 });
             }
 
-            function load_file() {
-                $("#form_file_id").val(get_file_id());
-                var url="/file?id=" + get_file_id();
-                $.get(url, function(data) {
-                    $("#content").text(data);
-                });
+            function load_revision(event) {
+                var key=event.target.getAttribute('id');
+                //console.log(key);
+                var url="/rev?id=" + key;
+                //console.log(url);
+                //var btn = $('#rev_list');
+                var $target = $(event.target);
+                //if(!$target) return;
+                //console.log($target);
+                divobj = $target.find('p');
+                //console.log(divobj);
+                if(divobj.html() == "") {
+                    $.get(url, function(data) {
+                        divobj.html(data);
+                    });
+                }
             }
 
-            function load_revision() {
-                var url="/rev?id=" + get_rev_id();
-                console.log(url);
-                $.get(url, function(data) {
-                    $("#rev_content").html(data);
-                });
-            }
 
             $('#files').live('pageshow', function (event, data) { load_files(); });
             $('#file').live('pageshow', function (event, data) { load_file(); });
             $('#revisions').live('pageshow', function (event, data) { load_revisions(); });
-            $('#revision').live('pageshow', function (event, data) { load_revision(); });
+            //$('#revision').live('pageshow', function (event, data) { load_revision(); });
+
+            $('#rev_list').live('expand',function(event){load_revision(event);});
+
+            $.ctrl = function(key, callback, args) {
+                var isCtrl = false;
+                $(document).keydown(function(e) {
+                    if(!args) args=[]; // IE barks when args is null
+
+                    if(e.ctrlKey) isCtrl = true;
+                    if(e.keyCode == key.charCodeAt(0) && isCtrl) {
+                        callback.apply(this, args);
+                        return false;
+                    }
+                }).keyup(function(e) {
+                    if(e.ctrlKey) isCtrl = false;
+                });
+            };
+
+            $.ctrl('S', function() {
+                document.forms["save"].submit();
+            });
         </script>
     </head> 
     <body>
@@ -148,12 +180,12 @@
 	        <div data-role="content" data-theme="a">	
                 <div data-role="collapsible-set" id="rev_list">
 	                <div data-role="collapsible" data-collapsed="false">
-	                <h3>Section 1</h3>
-	                <p>I'm the collapsible set content for section B.</p>
+	                    <h3>Section 1</h3>
+	                    <p>I'm the collapsible set content for section B.</p>
 	                </div>
 	                <div data-role="collapsible">
-	                <h3>Section 2</h3>
-	                <p>I'm the collapsible set content for section B.</p>
+	                    <h3>Section 2</h3>
+	                    <p>I'm the collapsible set content for section B.</p>
 	                </div>
                 </div>
                 <p><a href="#file" data-rel="back" data-role="button" data-inline="true" data-icon="back">Back to file</a></p>
