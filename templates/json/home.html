@@ -10,7 +10,7 @@
         <script>
             var file_id="";
             var rev_id="";
-            var timer_is_on=0;
+//            var timer_is_on=0;
             var old_content ="";
 
             function set_file_id(id) {
@@ -163,6 +163,7 @@
                 $.post("/newfile", { name: file_name },
                    function(data) {
                         //alert("Data Loaded: " + data);
+                        old_content = "";
                         set_file_id(data);
                         $('#new_file').dialog ('close');
                         //$('#file').dialog ('open');
@@ -178,10 +179,10 @@
                     }
                 }
             }
-
+/*
             function timedCount() {
                 save_file_content();
-                t=setTimeout("timedCount()",1000);
+                t=setTimeout("timedCount()",5000);
             }
 
             function StartTimer() {
@@ -194,20 +195,20 @@
             function StopTimer() {
                 timer_is_on=0;
             }
-
+*/
             function load() {
-                StartTimer();
+//                StartTimer();
 
                 $( "#create_new_file" ).bind( "click", function(event, ui) { create_new_file(); });
                 //$(document).bind( "pagebeforechange", function(e, data) { on_change_page(e, data); });
                 //$( document ).bind( "mobileinit", function() {
                     $('#file').live('pagebeforeshow',function(event, ui){
                          //console.log("pagebeforeshow: " + ui.nextPage + " : " + ui.prevPage);
-                         StartTimer();
+//                         StartTimer();
                     });
                     $('#file').live('pagebeforehide',function(event, ui){
                          //console.log("pagebeforehide: " + ui.nextPage + " : " + ui.prevPage);
-                         StopTimer();
+//                         StopTimer();
                          save_file_content();
                     });
                 //});
