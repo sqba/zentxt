@@ -159,7 +159,8 @@
                         //alert("Data Loaded: " + data);
                         set_file_id(data);
                         $('#new_file').dialog ('close');
-                        $('#file').dialog ('open');
+                        //$('#file').dialog ('open');
+                        window.location = "#file";
                    });
             }
 
@@ -173,6 +174,9 @@
         <div data-role="page" id="files" data-theme="a">
 	        <div data-role="header">
 		        <h1>Files</h1>
+                <a href="/suggestions">Suggestions</a>
+                <a href="/files">Files</a>
+                <a href="{{ login_url }}">Login</a>
 	        </div><!-- /header -->
 	        <div data-role="content" data-theme="a">	
                 <ul data-role="listview" data-inset="true" data-filter="true" id="file_list"></ul>

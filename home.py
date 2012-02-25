@@ -22,6 +22,7 @@ class HomePage(BasePage):
 #        self.redirect('/file?' + urllib.urlencode({'id': files[0].key()}))
         template_values = {
             'user'      : self.get_current_user(),
+            'login_url' : users.create_login_url(self.request.uri)
         }
         path = self.get_template_path( 'home.html' )
         self.response.out.write(template.render(path, template_values))
