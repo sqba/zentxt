@@ -42,3 +42,8 @@ class FilesPage(BasePage):
         path = self.get_template_path( 'files.html' )
         self.response.out.write(template.render(path, template_values))
 
+class NewFilePage(BasePage):
+    def post(self):
+        file_name = self.request.get('name')
+        self.create_file(file_name);
+

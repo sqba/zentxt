@@ -55,7 +55,7 @@
             }
 
             function load_revisions() {
-                $("#file_list").children().remove();
+                $("#rev_list").children().remove();
                 var url="/revisions?file=" + get_file_id();//file_id;
                 console.log(url);
                 $.getJSON(url, function(data) {
@@ -84,108 +84,96 @@
                 });
             }
 
-            $('#files').live('pageshow', function (event, data) {
-                load_files();
-            });
-
-            $('#file').live('pageshow', function (event, data) {
-                load_file();
-            });
-
-            $('#revisions').live('pageshow', function (event, data) {
-                load_revisions();
-            });
-
-            $('#revision').live('pageshow', function (event, data) {
-                load_revision();
-            });
+            $('#files').live('pageshow', function (event, data) { load_files(); });
+            $('#file').live('pageshow', function (event, data) { load_file(); });
+            $('#revisions').live('pageshow', function (event, data) { load_revisions(); });
+            $('#revision').live('pageshow', function (event, data) { load_revision(); });
         </script>
     </head> 
-    <body> 
-        <div data-role="page" id="home">
-
-            <div data-role="header">
-                <h1>ZenTXT</h1>
-            </div><!-- /header -->
-
-            <div data-role="content" >
-                <a href="/suggestions">Suggestions</a>
-                <a href="/files">Files</a>
-                <a href="{{ login_url }}">Login</a>
-
-                <p><a href="#files" data-role="button">Files</a></p>
-                <p><a href="#popup"data-role="button" data-rel="dialog" data-transition="pop">Show page "popup" (as a dialog)</a></p>
-            </div><!-- /content -->
-
-            <div data-role="footer" data-theme="d">
-                <h4>Page Footer</h4>
-            </div><!-- /footer -->
-        </div><!-- /page -->
-
+    <body>
         <div data-role="page" id="files" data-theme="a">
 	        <div data-role="header">
 		        <h1>Files</h1>
 	        </div><!-- /header -->
-
 	        <div data-role="content" data-theme="a">	
                 <ul data-role="listview" data-inset="true" data-filter="true" id="file_list"></ul>
-                <p><a href="#main" data-rel="back" data-role="button" data-inline="true" data-icon="back">Back to main page</a></p>
+                <p><a href="#new_file"data-role="button" data-rel="dialog" data-transition="pop">New file</a></p>
 	        </div><!-- /content -->
-	
 	        <div data-role="footer">
 		        <h4>Page Footer</h4>
 	        </div><!-- /footer -->
         </div><!-- /page two -->
-
+        <!--
+        FILE PAGE
+        -->
         <div data-role="page" id="file" data-theme="a">
 	        <div data-role="header">
 		        <h1>File</h1>
 	        </div><!-- /header -->
-
 	        <div data-role="content" data-theme="a">
                 <form id="save" action="/save" method="post">
                     <input type="hidden" name="id" value="zzz" id="form_file_id">
-                    <textarea name="textarea" id="content"></textarea>
+                    <textarea name="content" id="content"></textarea>
                     <input type="submit" value="Save">
                 </form>
+                <p><a href="#revisions" data-role="button">History</a></p>
+                <p><a href="#main" data-rel="back" data-role="button" data-inline="true" data-icon="back">Back to main page</a></p>
 	        </div><!-- /content -->
-
-            <p><a href="#revisions" data-role="button">History</a></p>
-	
 	        <div data-role="footer">
 		        <h4>Page Footer</h4>
 	        </div><!-- /footer -->
         </div><!-- /page two -->
-
+        <!--
+        REVISIONS PAGE
+        -->
         <div data-role="page" id="revisions" data-theme="a">
 	        <div data-role="header">
 		        <h1>Revisions</h1>
 	        </div><!-- /header -->
-
 	        <div data-role="content" data-theme="a">	
                 <ul data-role="listview" data-inset="true" data-filter="true" id="rev_list"></ul>
-                <p><a href="#main" data-rel="back" data-role="button" data-inline="true" data-icon="back">Back to main page</a></p>
+                <p><a href="#file" data-rel="back" data-role="button" data-inline="true" data-icon="back">Back to file</a></p>
 	        </div><!-- /content -->
-	
 	        <div data-role="footer">
 		        <h4>Page Footer</h4>
 	        </div><!-- /footer -->
         </div><!-- /page two -->
-
+        <!--
+        REVISION PAGE
+        -->
         <div data-role="page" id="revision" data-theme="a">
 	        <div data-role="header">
 		        <h1>Revision</h1>
 	        </div><!-- /header -->
-
 	        <div data-role="content" data-theme="a">
                 <p id="rev_content"></p>
+                <p><a href="#revisions" data-rel="back" data-role="button" data-inline="true" data-icon="back">Back to revisions</a></p>
 	        </div><!-- /content -->
-	
 	        <div data-role="footer">
 		        <h4>Page Footer</h4>
 	        </div><!-- /footer -->
         </div><!-- /page two -->
-
+        <!--
+        NEW FILE PAGE
+        -->
+        <div data-role="page" id="new_file">
+            <div data-role="header" data-theme="e">
+	            <h1>New file</h1>
+            </div><!-- /header -->
+            <div data-role="content" data-theme="d">	
+	            <h2>Name</h2>
+                <form id="newfile" action="/newfile" method="post">
+                    <input type="text" name="name" id="name" data-mini="true" />
+                    <input type="submit" value="Create">
+                </form>
+            </div><!-- /content -->
+            <div data-role="footer">
+	            <h4>Page Footer</h4>
+            </div><!-- /footer -->
+        </div><!-- /page popup -->
+        <!--
+        POPUP PAGE
+        -->
         <div data-role="page" id="popup">
         </div><!-- /page popup -->
     </body>

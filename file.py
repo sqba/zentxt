@@ -73,6 +73,8 @@ class FilePage(BasePage):
 
         new_text = self.request.get('content')
 
+        self.log_info("new_text = " + new_text)
+
         if self.has_text_changed(file, new_text):
             revision = Revision()
             revision.author     = self.get_current_user()
@@ -84,5 +86,7 @@ class FilePage(BasePage):
             file.head = revision
             file.put()
 
-        self.redirect('/file?' + urllib.urlencode({'id': file_id}))
+        #self.redirect('/file?' + urllib.urlencode({'id': file_id}))
+        #self.response.out.write(file_id)
+
 
