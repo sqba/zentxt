@@ -8,14 +8,28 @@
         <script src="js/jquery.mobile-1.0.1.min.js"></script>
 
         <script>
-            function add_list_item(list_id, text, href) {
+            var file_id="agpkZXZ-emVudHh0cgoLEgRGaWxlGAEM";
+
+            function set_file_id(id) {
+                file_id=id;
+                //sessionstorage.setItem("fileid", id);
+            }
+
+            function get_file_id() {
+                return file_id;
+                //return sessionstorage.getItem("fileid");
+            }
+
+            function add_list_item(list_id, text, href, key) {
                 if(text.length > 0) {
-                    var el = '<li><a href="'+href+'">'+text+'</a></li>';
+                    var ev = "onClick=set_file_id('"+key+"');";
+                    var el = "<li><a href='"+href+"'"+ev+">"+text+"</a></li>";
                     //el.page();
-                    $("#file_list").append(el);
-                    $('#file_list').listview('refresh');
+                    $(list_id).append(el);
+                    $(list_id).listview('refresh');
                 }
             }
+
             function load_files() {
                 $("#file_list").children().remove();
                 var url="/files";
@@ -23,25 +37,53 @@
                     $.each(data.file, function(index, file) {
                         //console.log(file);
                         url="/file?id=" + file.key
-                        add_list_item('#file_list', file.name, url);
-                    });
-                });
-            }
-            function load_revisions() {
-                $("#file_list").children().remove();
-                var url="/revisions?file=" + "agpkZXZ-emVudHh0cgoLEgRGaWxlGAEM";
-                $.getJSON(url, function(data) {
-                    $.each(data.revision, function(index, revision) {
-                        //console.log(file);
-                        url="/rev?id=" + revision.key
-                        add_list_item('#file_list', revision.date, url);
+                        add_list_item('#file_list', file.name, "#file", file.key);
                     });
                 });
             }
 
+            function load_revisions() {
+                $("#file_list").children().remove();
+                var url="/revisions?file=" + get_file_id();//file_id;
+                console.log(url);
+                $.getJSON(url, function(data) {
+                    $.each(data.revision, function(index, revision) {
+                        //console.log(file);
+                        url="/rev?id=" + revision.key
+                        add_list_item('#rev_list', revision.date, "#revision", revision.key);
+                    });
+                });
+            }
+
+            function load_file() {
+                var url="/file?id=" + get_file_id();
+                $.get(url, function(data) {
+                    $("#file_content").text(data);
+                });
+            }
+
+            function load_revision() {
+                var url="/rev?id=" + get_file_id();
+                console.log(url);
+                $.get(url, function(data) {
+                    $("#rev_content").text(data);
+                });
+            }
+
             $('#files').live('pageshow', function (event, data) {
+                load_files();
+            });
+
+            $('#file').live('pageshow', function (event, data) {
+                load_file();
+            });
+
+            $('#revisions').live('pageshow', function (event, data) {
                 load_revisions();
-                //load_files();
+            });
+
+            $('#revision').live('pageshow', function (event, data) {
+                load_revision();
             });
         </script>
     </head> 
@@ -68,19 +110,59 @@
 
         <div data-role="page" id="files" data-theme="a">
 	        <div data-role="header">
-		        <h1>Two</h1>
+		        <h1>Files</h1>
 	        </div><!-- /header -->
 
 	        <div data-role="content" data-theme="a">	
-		        <h2>Files</h2>
-                <ul data-role="listview" data-inset="true" data-filter="true" id="file_list">
-	                <li><a href="#">Acura</a></li>
-	                <li><a href="#">Audi</a></li>
-	                <li><a href="#">BMW</a></li>
-	                <li><a href="#">Cadillac</a></li>
-	                <li><a href="#">Ferrari</a></li>
-                </ul>
-                <p><a href="#main" data-rel="back" data-role="button" data-inline="true" data-icon="back">Back to page "one"</a></p>
+                <ul data-role="listview" data-inset="true" data-filter="true" id="file_list"></ul>
+                <p><a href="#main" data-rel="back" data-role="button" data-inline="true" data-icon="back">Back to main page</a></p>
+	        </div><!-- /content -->
+	
+	        <div data-role="footer">
+		        <h4>Page Footer</h4>
+	        </div><!-- /footer -->
+        </div><!-- /page two -->
+
+        <div data-role="page" id="file" data-theme="a">
+	        <div data-role="header">
+		        <h1>File</h1>
+	        </div><!-- /header -->
+
+	        <div data-role="content" data-theme="a">	
+                <textarea name="textarea" id="file_content">
+                I'm a basic textarea. If this is pre-populated with content, the height will be automatically adjusted to fit without needing to scroll. That is a pretty handy usability feature.
+                </textarea>
+	        </div><!-- /content -->
+
+            <p><a href="#revisions" data-role="button">History</a></p>
+	
+	        <div data-role="footer">
+		        <h4>Page Footer</h4>
+	        </div><!-- /footer -->
+        </div><!-- /page two -->
+
+        <div data-role="page" id="revisions" data-theme="a">
+	        <div data-role="header">
+		        <h1>Revisions</h1>
+	        </div><!-- /header -->
+
+	        <div data-role="content" data-theme="a">	
+                <ul data-role="listview" data-inset="true" data-filter="true" id="rev_list"></ul>
+                <p><a href="#main" data-rel="back" data-role="button" data-inline="true" data-icon="back">Back to main page</a></p>
+	        </div><!-- /content -->
+	
+	        <div data-role="footer">
+		        <h4>Page Footer</h4>
+	        </div><!-- /footer -->
+        </div><!-- /page two -->
+
+        <div data-role="page" id="revision" data-theme="a">
+	        <div data-role="header">
+		        <h1>Revision</h1>
+	        </div><!-- /header -->
+
+	        <div data-role="content" data-theme="a">
+                <p id="rev_content"></p>
 	        </div><!-- /content -->
 	
 	        <div data-role="footer">
