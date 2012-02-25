@@ -10,6 +10,8 @@
         <script>
             var file_id="";
             var rev_id="";
+            var timer_is_on=0;
+            var old_content ="";
 
             function set_file_id(id) {
                 file_id=id;
@@ -58,6 +60,7 @@
                 $("#form_file_id").val(get_file_id());
                 var url="/file?id=" + get_file_id();
                 $.get(url, function(data) {
+                    old_content = data;
                     $("#content").text(data);
                 });
             }
@@ -136,12 +139,15 @@
                 //alert(get_file_id());
                 //alert($("#content").text());
                 var new_content = $("#content").val();
-                //alert(new_content);
-                //console.log(new_content);
-                $.post("/save", { id: get_file_id(), content: new_content },
-                   function(data) {
-                     //alert("Data Loaded: " + data);
-                   });
+                if(old_content != new_content) {
+                    //alert(new_content);
+                    //console.log(new_content);
+                    $.post("/save", { id: get_file_id(), content: new_content },
+                       function(data) {
+                         //alert("Data Loaded: " + data);
+                         old_content = new_content;
+                       });
+                }
             }
 
             $.ctrl('S', function() {
@@ -149,7 +155,7 @@
                 save_file_content();
             });
 
-            $( "#save" ).live( "click", function(event, ui) { save_file_content(); });
+            //$( "#save" ).live( "click", function(event, ui) { save_file_content(); });
 
             function create_new_file() {
                 var file_name = $("#file_name").val();
@@ -163,10 +169,48 @@
                         window.location = "#file";
                    });
             }
+            
+            function on_change_page(e, data) {
+                if ( typeof data.toPage === "string" ) {
+                    var u = $.mobile.path.parseUrl( data.toPage ), pl = /^#file/;
+                    if ( u.hash.search(pl) !== -1 ) {
+                        alert(u);
+                    }
+                }
+            }
 
+            function timedCount() {
+                save_file_content();
+                t=setTimeout("timedCount()",1000);
+            }
+
+            function StartTimer() {
+                if (!timer_is_on) {
+                    timer_is_on=1;
+                    timedCount();
+                }
+            }
+            
+            function StopTimer() {
+                timer_is_on=0;
+            }
 
             function load() {
+                StartTimer();
+
                 $( "#create_new_file" ).bind( "click", function(event, ui) { create_new_file(); });
+                //$(document).bind( "pagebeforechange", function(e, data) { on_change_page(e, data); });
+                //$( document ).bind( "mobileinit", function() {
+                    $('#file').live('pagebeforeshow',function(event, ui){
+                         //console.log("pagebeforeshow: " + ui.nextPage + " : " + ui.prevPage);
+                         StartTimer();
+                    });
+                    $('#file').live('pagebeforehide',function(event, ui){
+                         //console.log("pagebeforehide: " + ui.nextPage + " : " + ui.prevPage);
+                         StopTimer();
+                         save_file_content();
+                    });
+                //});
             }
         </script>
     </head> 
@@ -178,7 +222,7 @@
 	        </div><!-- /header -->
 	        <div data-role="content" data-theme="a">	
                 <ul data-role="listview" data-inset="true" data-filter="true" id="file_list"></ul>
-                <p><a href="#new_file"data-role="button" data-rel="dialog" data-transition="pop">New file</a></p>
+                <p><a href="#new_file" data-role="button" data-rel="dialog" data-inline="true" data-transition="pop">New file</a></p>
 	        </div><!-- /content -->
 	        <div data-role="footer">
 		        <h4>Page Footer</h4>
@@ -198,8 +242,7 @@
                     <input type="submit" value="Save">
                 </form-->
                 <textarea name="content" id="content"></textarea>
-                <p><a id="save" data-role="button">Save Button</a></p>
-                <p><a href="#revisions" data-role="button">History</a></p>
+                <p><a href="#revisions" data-role="button" data-inline="true">History</a></p>
                 <p><a href="#main" data-rel="back" data-role="button" data-inline="true" data-icon="back">Back to main page</a></p>
 	        </div><!-- /content -->
 	        <div data-role="footer">
