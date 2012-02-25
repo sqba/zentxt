@@ -1,6 +1,8 @@
 import os
 import urllib
 
+import logging
+
 from google.appengine.ext import db
 from google.appengine.api import users
 from google.appengine.ext import webapp
@@ -14,6 +16,9 @@ ACCESS_WRITE    = 2
 SUGGESTIONS_USER = "SUGGESTIONS"
 
 class BasePage(webapp.RequestHandler):
+
+    def log_info(self, msg):
+        logging.info(msg)
 
     def get_current_user(self):
         return users.get_current_user()
@@ -46,6 +51,7 @@ class BasePage(webapp.RequestHandler):
             if len(entities) > 0:
                 return entities[0].access
             else:
+                self.log_info("file permission denied")
                 self.response.out.write("file permission denied")
                 return ACCESS_NONE
 
@@ -66,7 +72,9 @@ class BasePage(webapp.RequestHandler):
         if len(entities) > 0:
             file = entities[0]
             #if self.get_file_permission(file):
+            self.log_info("found file id=" + id)
             return file
+        self.log_info("file not found")
         return None
 
     def get_revision_by_id(self, id):
