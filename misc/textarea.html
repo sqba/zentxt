@@ -9,65 +9,40 @@
             textarea:focus { outline: none; }
         </style>
         <script>
-            function post_to_url(path, params, method) {
-                method = method || "post"; // Set method to post by default, if not specified.
+           function post_to_url(path, params, method) {
+                method = method || "post";
 
-                // The rest of this code assumes you are not using a library.
-                // It can be made less wordy if you use one.
                 var form = document.createElement("form");
+
+                //move the submit function to another variable
+                //so that it doesn't get over written
+                form._submit_function_ = form.submit;
+
                 form.setAttribute("method", method);
                 form.setAttribute("action", path);
 
                 for(var key in params) {
-                    if(params.hasOwnProperty(key)) {
-                        var hiddenField = document.createElement("input");
-                        hiddenField.setAttribute("type", "hidden");
-                        hiddenField.setAttribute("name", key);
-                        hiddenField.setAttribute("value", params[key]);
+                    var hiddenField = document.createElement("input");
+                    hiddenField.setAttribute("type", "hidden");
+                    hiddenField.setAttribute("name", key);
+                    hiddenField.setAttribute("value", params[key]);
 
-                        form.appendChild(hiddenField);
-                     }
+                    form.appendChild(hiddenField);
                 }
 
                 document.body.appendChild(form);
-                form.submit();
-            }
-        </script>
-        <script language="JavaScript">
+                form._submit_function_(); //call the renamed function
+            }            
             function OnUnload()
             {
-                post_to_url("http://localhost:8080/file?id=agpkZXZ-emVudHh0cgoLEgRGaWxlGCsM", { submit: "submit" } ); //works!
-                //alert("window closing....");
+                post_to_url("http://localhost:8080/file?id=agpkZXZ-emVudHh0cgoLEgRGaWxlGCsM", { submit: "submit" } );
             }
         </script>
     </head>
-    <!--script language="JavaScript">
-        function save_content()
-        {
-            //alert('save_content()');
-            return "You have attempted to leave this page.  If you have made any changes to the fields without clicking the Save button, your changes will be lost.  Are you sure you want to exit this page?";
-        }
-    </script>
-    <body onbeforeunload="save_content()"-->
-    <body onunload="OnUnload()">
-        <!--script language="JavaScript">
-            window.onbeforeunload = confirmExit;
-            function confirmExit()
-            {
-                console.log('confirmExit()');
-                //return "You have attempted to leave this page.  If you have made any changes to the fields without clicking the Save button, your changes will be lost.  Are you sure you want to exit this page?";
-            }
-        </script-->
+    <body onbeforeunload="OnUnload()">
         <!--script>
-            window.onbeforeunload = function (e) {
-                var message = "Your confirmation message goes here.",
-                e = e || window.event;
-                // For IE and Firefox
-                if (e) {
-                    e.returnValue = message;
-                }
-                // For Safari
-                return message;
+            window.onbeforeunload=function(e){
+                post_to_url("http://localhost:8080/file?id=agpkZXZ-emVudHh0cgoLEgRGaWxlGCsM", { submit: "submit" } );
             };
         </script-->
         <textarea cols="1" rows="1" id="textarea"></textarea>
