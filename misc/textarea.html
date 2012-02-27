@@ -37,14 +37,20 @@
             {
                 post_to_url("http://localhost:8080/file?id=agpkZXZ-emVudHh0cgoLEgRGaWxlGCsM", { submit: "submit" } );
             }
+            function OnLoad()
+            {
+                //document.myform.zen_text.focus();
+                document.getElementById('zen_text').focus();
+                //document.getElementById('zen_text').select();
+            }
         </script>
     </head>
-    <body onbeforeunload="OnUnload()">
+    <body onbeforeunload="OnUnload()" onload="OnLoad()">
         <!--script>
             window.onbeforeunload=function(e){
                 post_to_url("http://localhost:8080/file?id=agpkZXZ-emVudHh0cgoLEgRGaWxlGCsM", { submit: "submit" } );
             };
         </script-->
-        <textarea cols="1" rows="1" id="textarea"></textarea>
+        <textarea id="zen_text" cols="1" rows="1" id="textarea">Hello World!</textarea>
     </body>
 </html>
