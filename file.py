@@ -10,6 +10,8 @@ from models import File, Revision
 from base import BasePage
 import base
 
+import HTMLParser
+
 class FilePage(BasePage):
 
     def get_revisions(self, file):
@@ -24,7 +26,7 @@ class FilePage(BasePage):
         else:
             return True
 
-    def get(self):
+    def GetOutput(self):
 #        if not self.check_user():
 #            return
 
@@ -55,7 +57,10 @@ class FilePage(BasePage):
         }
 
         path = self.get_template_path( 'file.html' )
-        self.response.out.write(template.render(path, template_values))
+        return template.render(path, template_values)
+
+    def get(self):
+        self.response.out.write( self.GetOutput() )
 
     def post(self):
 #        if not self.check_user():
@@ -89,4 +94,11 @@ class FilePage(BasePage):
         #self.redirect('/file?' + urllib.urlencode({'id': file_id}))
         #self.response.out.write(file_id)
 
+
+class HtmlPage(FilePage):
+    def get(self):
+        self.response.headers['Content-Type'] = "text/html; charset=utf-8"
+        h = HTMLParser.HTMLParser()
+        val = h.unescape( self.GetOutput() )
+        self.response.out.write(val)
 

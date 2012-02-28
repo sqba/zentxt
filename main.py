@@ -5,7 +5,7 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 
 from home import HomePage, SuggestionsPage
 from files import FilesPage, CreateNewFilePage
-from file import FilePage
+from file import FilePage, HtmlPage
 from revisions import RevisionsPage
 from revision import RevisionPage
 
@@ -13,6 +13,7 @@ from revision import RevisionPage
 application = webapp.WSGIApplication([
     ('/', HomePage),
     ('/file', FilePage),
+    ('/html', HtmlPage),
     ('/save', FilePage),
     ('/files', FilesPage),
     ('/newfile', CreateNewFilePage),
