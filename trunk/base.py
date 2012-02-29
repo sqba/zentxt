@@ -9,6 +9,7 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 
 from models import File, Revision, FilePermissions
+import permissions
 
 ACCESS_NONE     = 0
 ACCESS_READ     = 1
@@ -33,27 +34,10 @@ class BasePage(webapp.RequestHandler):
             return False
 
     def create_permission(self, file, user, access):
-        perm = FilePermissions()
-        perm._file = file
-        perm.user = user
-        perm.access = access
-        perm.put();
+        permissions.create_permission(file, user, access)
 
     def get_file_permission(self, file):
-        query = FilePermissions.gql("WHERE _file = :1 AND user = :2", file, self.get_current_user())
-        entities = query.fetch(1)
-        if len(entities) > 0:
-            return entities[0].access
-        else:
-            user = users.User(SUGGESTIONS_USER)
-            query = FilePermissions.gql("WHERE _file = :1 AND user = :2", file, user)
-            entities = query.fetch(1)
-            if len(entities) > 0:
-                return entities[0].access
-            else:
-                self.log_info("file permission denied")
-                self.response.out.write("file permission denied")
-                return ACCESS_NONE
+        return permissions.get_file_permission(file, self.get_current_user())
 
     def create_file(self, filename, user=None):
         file = File()
