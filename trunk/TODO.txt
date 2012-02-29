@@ -1,0 +1,21 @@
+-localized date & time (not UTC)
+-fonts (and style in general)
+-multiple files
+-renaming files
+-sharing files
+-mobile interface (jquery ui mobile - http://jquerymobile.com/)
+-opening multiple revisions
+-paging (or infinite scroll)
+-notifications for shared files change
+-graphics
+-upload/download
+-WebDAV?
+-branching
+-searching through revisions
+-Change 'None' to 'Anonymous'
+-checkbox for public files
+-enable serving files as html or other mime types
+-page flip
+-chrome extension
+-separating core (FS) from UI
+
