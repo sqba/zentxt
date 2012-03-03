@@ -1,0 +1,30 @@
+<html>
+    <head>
+        <style>
+        </style>
+        <script>
+        function onclick1() {
+            //alert("onclick");
+            var el = document.getElementById('2');
+            if(el.style.display == "none") {
+                el.style.display = "block";
+            } else {
+                el.style.display = "none";
+            }
+        }
+        </script>
+    </head>
+    <body>
+          <ul>
+              <li>
+                <a href="#" onclick="onclick1()" id="1">Searching for resources by type</a>
+                <div class="toc" id="2" style="display: none; ">
+              zzzzzz
+                </div>
+              </li>
+              <li><a href="#SearchingByTitle">Searching for resources by title</a></li>
+              <li><a href="#SearchingByFullText">Searching for documents by full text query</a></li>
+          </ul>
+    </body>
+</html>
+
