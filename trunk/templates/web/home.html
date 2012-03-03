@@ -1,16 +1,207 @@
 <html>
-    <body>
-		<div id="suggestions" style="padding: 0pt 0pt 4px; font-size: 84%;" width="100%" align="left">
-			<nobr>
-				<a href="/suggestions">Suggestions</a>
-                <a href="/files">Files</a>
-			</nobr>
-		</div>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+        <link rel="stylesheet" href="css/gstyle.css" />
+        <script src="js/jquery-1.7.1.min.js"></script>
+        <title>ZenTxt</title>
+        <script>
+            var old_content="";
+            var file_id="";
+            function set_file_id(id) {
+                file_id=id;
+                //sessionstorage.setItem("fileid", id);
+            }
+            function get_file_id() {
+                return file_id;
+                //return sessionstorage.getItem("fileid");
+            }
 
-		<div id="guser" style="padding: 0pt 0pt 4px; font-size: 84%;" width="100%" align="right">
-			<nobr>
-				<a href="{{ login_url }}">Login</a>
-			</nobr>
-		</div>
+            function load_revision(rev_id)
+            {
+                console.log("Loading revision " + rev_id);
+                var url="/rev?id=" + rev_id;
+                var data;
+                $.get(url, function(data) {
+                    $("#revision").html(data);
+                });
+                $("#editor").hide();
+                $("#revision").show();
+            }
+
+            function load_revisions(file_id) {
+                var list_id="#rev_list";
+                $(list_id).children().remove();
+                var url="/revisions?file=" + file_id + "&max=10";
+                $.getJSON(url, function(data) {
+                    $.each(data.revision, function(index, revision) {
+                        //console.log(revision);
+                        if(revision.key.length > 0) {
+                            url="load_revision('"+revision.key+"')";
+                            var el = "<li><a href='#' onclick="+url+">"+revision.date+"</a></li>";
+                            $(list_id).append(el);
+                        }
+                    });
+                    //$(list_id).listview('refresh');
+                });
+            }
+
+            function load_files() {
+                var list_id="#file_list";
+                $(list_id).children().remove();
+                $.getJSON("/files?max=10", function(data) {
+                    $.each(data.file, function(index, file) {
+                        //console.log(file);
+                        if(file.name.length > 0) {
+                            url="load_file('" + file.key + "')";
+                            var el = "<li><a href='#' onclick="+url+">"+file.name+"</a></li>";
+                            $(list_id).append(el);
+                        }
+                    });
+                    //$(list_id).listview('refresh');
+                });
+            }
+
+            function load_file(file_id)
+            {
+                console.log("Loading file " + file_id);
+                set_file_id( file_id );
+                var url="/file?id=" + file_id;
+                var data;
+                $.get(url, function(data) {
+                    $("#content").text(data);
+                    old_content = data;
+                });
+                load_revisions( file_id );
+                $("#revision").hide();
+                $("#editor").show();
+            }
+
+            function load_last_file()
+            {
+                var data;
+                $.get("/last", function(data) {
+                    load_file( data );
+                });
+            }
+
+            function reload_file() {
+                load_file( get_file_id() );
+            }
+
+            function load_suggestions() {
+                var data;
+                $.get("/suggestions", function(data) {
+                    load_file( data );
+                });
+            }
+
+            function OnLoad()
+            {
+                load_files();
+                load_last_file();
+            }
+
+            function save_file_content() {
+                var new_content = $("#content").val();
+                if(old_content != new_content) {
+                    //console.log(new_content);
+                    var file_id=get_file_id();
+                    $.post("/save", { id: file_id, content: new_content },
+                       function(data) {
+                            old_content = new_content;
+                            load_revisions(file_id)
+                       });
+                }
+            }
+
+            function OnUnload()
+            {
+                save_file_content();
+            }
+
+            $.ctrl = function(key, callback, args) {
+                var isCtrl = false;
+                $(document).keydown(function(e) {
+                    if(!args) args=[]; // IE barks when args is null
+
+                    if(e.ctrlKey) isCtrl = true;
+                    if(e.keyCode == key.charCodeAt(0) && isCtrl) {
+                        callback.apply(this, args);
+                        return false;
+                    }
+                }).keyup(function(e) {
+                    if(e.ctrlKey) isCtrl = false;
+                });
+            };
+            $.ctrl('S', function() {
+                save_file_content();
+            });
+            function checkKeyCode(evt)
+            {
+                var evt = (evt) ? evt : ((event) ? event : null);
+                var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null);
+                if(event.keyCode==116)
+                {
+                    //alert("Refresh");
+                    load_last_file();
+                    evt.keyCode=0;
+                    return false
+                }
+            }
+            document.onkeydown=checkKeyCode;
+        </script>
+    </head>
+    <body onbeforeunload="OnUnload()" onload="OnLoad()">
+        <div id="wrapper">
+            <div id="navwrapper">  
+                <ul id="nav" class="floatleft">
+{% if user %}
+                    <li>
+                        <a class="current" class="dmenu" href="#" onclick="reload_file()">Edit <span class="arrowdown">▼</span></a>  
+                        <ul>  
+                            <li><a href="#">Rename</a></li>  
+                            <li class="menuseprator"></li>  
+                            <li><a href="#">Even More »</a></li>  
+                        </ul>  
+                    </li>  
+                    <!--li><a href="#">History</a></li-->
+                    <li>
+                        <a class="dmenu" href="#">Files <span class="arrowdown">▼</span></a>  
+                        <ul id="file_list">  
+                            <li><a href="#">file</a></li>  
+                            <li class="menuseprator"></li>  
+                            <li><a href="#">Even More »</a></li>  
+                        </ul>  
+                    </li>  
+{% endif %}
+                    <li>
+                        <a class="dmenu" href="#">Revisions <span class="arrowdown">▼</span></a>  
+                        <ul id="rev_list">  
+                            <li><a href="#">revision</a></li>  
+                            <li class="menuseprator"></li>  
+                        </ul>  
+                    </li>  
+                    <li><a href="#" onclick="load_suggestions()">Suggestions</a></li>  
+                </ul>
+                <ul id="nav" class="floatright">  
+{% if user %}
+			        <li><a href="#">{{ user }}</a></li>
+                    <!--li><a href="#">Settings</a></li-->
+                    <li><a href="{{ logout_url }}">Logout</a></li>  
+{% else %}
+                    <li><a href="{{ login_url }}">Login</a></li>
+{% endif %}
+                </ul>  
+              
+                <br class="clear">  
+            </div>  
+
+            <div id="editor" class="editor">
+                <textarea id="content" cols="1" rows="1">Hello World!</textarea>
+            </div>
+            <div id="revision" class="editor" style="color: #B0D1E8;"></dev>
+        </div>
     </body>
 </html>
+

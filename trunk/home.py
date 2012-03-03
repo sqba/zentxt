@@ -4,7 +4,7 @@ import urllib
 from google.appengine.ext import db
 from google.appengine.api import users
 
-from models import File
+from models import File, Revision
 from base import BasePage
 import base
 
@@ -22,15 +22,17 @@ class HomePage(BasePage):
 #        self.redirect('/file?' + urllib.urlencode({'id': files[0].key()}))
         template_values = {
             'user'      : self.get_current_user(),
-            'login_url' : users.create_login_url(self.request.uri)
+            'login_url' : users.create_login_url(self.request.uri),
+            'logout_url': users.create_logout_url("/")
         }
         path = self.get_template_path( 'home.html' )
         self.response.out.write(template.render(path, template_values))
 
     def anon_user_page(self):
         template_values = {
-            'user'      : "Anonymous",
-            'login_url' : users.create_login_url(self.request.uri)
+            #'user'      : "Anonymous",
+            'login_url' : users.create_login_url(self.request.uri),
+            'logout_url': users.create_logout_url("/")
         }
         path = self.get_template_path( 'home.html' )
         self.response.out.write(template.render(path, template_values))
@@ -44,11 +46,11 @@ class HomePage(BasePage):
 class SuggestionsPage(BasePage):
     def get(self):
         user = users.User(base.SUGGESTIONS_USER)
-        files = db.GqlQuery("SELECT * FROM File WHERE author = :1 LIMIT 50", user)
+        files = db.GqlQuery("SELECT * FROM File WHERE author = :1 LIMIT 1", user)
         if files.count() > 0:
             file_id = files[0].key()
         else:
             file_id = self.create_file("Suggestions", user)
             #self.redirect('/file?' + urllib.urlencode({'id': file_id}))
-        self.redirect('/file?' + urllib.urlencode({'id': file_id}))
+        self.response.out.write(file_id)
 

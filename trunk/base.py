@@ -70,9 +70,14 @@ class BasePage(webapp.RequestHandler):
             return rev
         return None
 
+    def web_version(self):
+        return True
+
     def get_template_path(self, filename):
         template_path = os.path.join(os.path.dirname(__file__), "templates")
         #template_path = os.path.join(template_path, "mobile")
-        #template_path = os.path.join(template_path, "web")
-        template_path = os.path.join(template_path, "json")
+        template_path = os.path.join(template_path, "web")
+        #template_path = os.path.join(template_path, "json")
         return os.path.join(template_path, filename)
+
+
