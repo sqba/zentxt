@@ -53,4 +53,15 @@ class CreateNewFilePage(BasePage):
         file_id = self.create_file(file_name)
         self.response.out.write(file_id)
 
-
+class RenameFilePage(BasePage):
+    def post(self):
+        file_name = self.request.get('name')
+        self.log_info("RenameFilePage " + file_name)
+        file_id = self.request.get("id")
+        file = self.get_file(file_id)
+        if file is None:
+            self.response.out.write("File not found")
+            return
+        file.name = file_name
+        file.put()
+        self.response.out.write(file_id)
