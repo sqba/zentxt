@@ -46,6 +46,15 @@
                     old_content = data;
                     set_file_id( file_id );
                     load_revisions( file_id );
+                    set_file_name( file_id );
+                });
+            }
+            
+            function set_file_name(file_id) {
+                var url="/fileinfo?id=" + file_id;
+                var data;
+                $.getJSON(url, function(data) {
+                    $(".filename").text(data.name);
                 });
             }
             
@@ -55,6 +64,7 @@
                     var file_id=get_file_id();
                     $.post("/rename", { id: file_id, name: file_name },
                        function(data) {
+                            set_file_name(file_id);
                             load_files();
                        });
                 }
@@ -89,6 +99,8 @@
                 var list_id="#rev_list";
                 $(list_id).children().remove();
                 var el = "<li><a href='#' onclick='show_all_revisions()'>Show all</a></li>";
+                $(list_id).append(el);
+                el = "<li class='menuseprator'></li>"
                 $(list_id).append(el);
                 var url="/revisions?file=" + file_id + "&max=15";
                 $.getJSON(url, function(data) {
@@ -145,6 +157,8 @@
             function load_files() {
                 var list_id="#file_list";
                 $(list_id).children().remove();
+                var el = "<li><a href='#' onclick='rename_file()'>Rename</a></li>";
+                $(list_id).append(el);
                 var el = "<li><a href='#' onclick='create_new_file()'>New file</a></li>";
                 $(list_id).append(el);
                 var el = "<li><a href='#' onclick='show_all_files()'>Show all</a></li>";
@@ -255,21 +269,13 @@
             <div id="navwrapper">  
                 <ul id="nav" class="floatleft">
 {% if user %}
-                    <li>
-                        <a class="current" class="dmenu" href="#" onclick="reload_file()">Edit <span class="arrowdown">▼</span></a>  
-                        <ul>  
-                            <li><a href="#" onclick="rename_file()">Rename</a></li>  
-                            <li class="menuseprator"></li>  
-                            <li><a href="#">Even More »</a></li>  
-                        </ul>  
-                    </li>  
                     <!--li><a href="#">History</a></li-->
                     <li>
-                        <a class="dmenu" href="#">Files <span class="arrowdown">▼</span></a>  
+                        <a class="dmenu" href="#" onclick="load_last_file()"><span class="filename">Files</span><span class="arrowdown">▼</span></a>  
                         <ul id="file_list">  
                             <li><a href="#">file</a></li>  
-                            <li class="menuseprator"></li>  
-                            <li><a href="#">Even More »</a></li>  
+                            <!--li class="menuseprator"></li>  
+                            <li><a href="#">Even More »</a></li-->
                         </ul>  
                     </li>  
 {% endif %}
@@ -298,13 +304,13 @@
             <div id="editor" class="editor">
                 <textarea id="content" cols="1" rows="1" onkeydown="OnTextareaKeyDown()">Hello World!</textarea>
             </div>
-            <div id="revision" class="editor" style="color: #B0D1E8;"></div>
-            <div id="listview" class="editor" style="color: #B0D1E8;">
+            <div id="revision" class="editor" style="background-color: #555555; overflow:scroll;"></div>
+            <div id="listview" class="editor" style="background-color: #555555; overflow:scroll;">
                 <ul id="file_list_full">
                   <li>
                   </li>
                 </ul>
-            </dev>
+            </div>
         </div>
     </body>
 </html>
