@@ -6,15 +6,44 @@
         <script src="js/jquery-1.7.1.min.js"></script>
         <title>ZenTxt</title>
         <script>
-            var old_content="";
-            var file_id="";
+            var current_file_id="";
             function set_file_id(id) {
-                file_id=id;
+                current_file_id=id;
                 //sessionstorage.setItem("fileid", id);
             }
             function get_file_id() {
-                return file_id;
+                return current_file_id;
                 //return sessionstorage.getItem("fileid");
+            }
+
+            var old_content="";
+            function load_file(file_id)
+            {
+                $("#revision").hide();
+                $("#editor").show();
+                $("#content").text("");
+                console.log("Loading file " + file_id);
+                var url="/file?id=" + file_id;
+                var data;
+                $.get(url, function(data) {
+                    $("#content").val(data);
+                    old_content = data;
+                    set_file_id( file_id );
+                    load_revisions( file_id );
+                });
+            }
+            function save_file_content() {
+                var new_content = $("#content").val();
+                if(old_content != new_content) {
+                    var file_id=get_file_id();
+                    console.log("Saving file " + file_id);
+                    var data;
+                    $.post("/save", { id: file_id, content: new_content },
+                       function(data) {
+                            old_content = new_content;
+                            load_revisions(file_id)
+                       });
+                }
             }
 
             function load_revision(rev_id)
@@ -24,9 +53,9 @@
                 var data;
                 $.get(url, function(data) {
                     $("#revision").html(data);
+                    $("#editor").hide();
+                    $("#revision").show();
                 });
-                $("#editor").hide();
-                $("#revision").show();
             }
 
             function load_revisions(file_id) {
@@ -42,7 +71,6 @@
                             $(list_id).append(el);
                         }
                     });
-                    //$(list_id).listview('refresh');
                 });
             }
 
@@ -58,23 +86,7 @@
                             $(list_id).append(el);
                         }
                     });
-                    //$(list_id).listview('refresh');
                 });
-            }
-
-            function load_file(file_id)
-            {
-                console.log("Loading file " + file_id);
-                set_file_id( file_id );
-                var url="/file?id=" + file_id;
-                var data;
-                $.get(url, function(data) {
-                    $("#content").text(data);
-                    old_content = data;
-                });
-                load_revisions( file_id );
-                $("#revision").hide();
-                $("#editor").show();
             }
 
             function load_last_file()
@@ -100,19 +112,6 @@
             {
                 load_files();
                 load_last_file();
-            }
-
-            function save_file_content() {
-                var new_content = $("#content").val();
-                if(old_content != new_content) {
-                    //console.log(new_content);
-                    var file_id=get_file_id();
-                    $.post("/save", { id: file_id, content: new_content },
-                       function(data) {
-                            old_content = new_content;
-                            load_revisions(file_id)
-                       });
-                }
             }
 
             function OnUnload()
