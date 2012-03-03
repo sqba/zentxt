@@ -16,9 +16,24 @@
                 //return sessionstorage.getItem("fileid");
             }
 
+            var content_changed=false;
             var old_content="";
-            function load_file(file_id)
-            {
+            function save_file_content() {
+                if(true == content_changed) {
+                    var new_content = $("#content").val();
+                    var file_id=get_file_id();
+                    console.log("Saving file " + file_id);
+                    var data;
+                    $.post("/save", { id: file_id, content: new_content },
+                       function(data) {
+                            content_changed = false;
+                            old_content = new_content;
+                            load_revisions(file_id)
+                       });
+                }
+            }
+            function load_file(file_id) {
+                save_file_content();
                 $("#revision").hide();
                 $("#editor").show();
                 $("#content").text("");
@@ -32,19 +47,6 @@
                     load_revisions( file_id );
                 });
             }
-            function save_file_content() {
-                var new_content = $("#content").val();
-                if(old_content != new_content) {
-                    var file_id=get_file_id();
-                    console.log("Saving file " + file_id);
-                    var data;
-                    $.post("/save", { id: file_id, content: new_content },
-                       function(data) {
-                            old_content = new_content;
-                            load_revisions(file_id)
-                       });
-                }
-            }
             
             function rename_file() {
                 var file_name = prompt("Please enter new name","");
@@ -52,13 +54,13 @@
                     var file_id=get_file_id();
                     $.post("/rename", { id: file_id, name: file_name },
                        function(data) {
-                            load_file(data);
                             load_files();
                        });
                 }
             }
 
             function create_new_file() {
+                save_file_content();
                 var file_name = prompt("Please enter file name","New File");
                 if(file_name.length > 0) {
                     $.post("/newfile", { name: file_name },
@@ -84,6 +86,8 @@
             function load_revisions(file_id) {
                 var list_id="#rev_list";
                 $(list_id).children().remove();
+                var el = "<li><a href='#' onclick='show_all_revisions()'>Show all</a></li>";
+                $(list_id).append(el);
                 var url="/revisions?file=" + file_id + "&max=15";
                 $.getJSON(url, function(data) {
                     $.each(data.revision, function(index, revision) {
@@ -101,6 +105,8 @@
                 var list_id="#file_list";
                 $(list_id).children().remove();
                 var el = "<li><a href='#' onclick='create_new_file()'>New file</a></li>";
+                $(list_id).append(el);
+                var el = "<li><a href='#' onclick='show_all_file()'>Show all</a></li>";
                 $(list_id).append(el);
                 el = "<li class='menuseprator'></li>"
                 $(list_id).append(el);
@@ -144,6 +150,13 @@
             function OnUnload()
             {
                 save_file_content();
+            }
+            
+            function OnTextareaKeyDown() {
+                var new_content = $("#content").val();
+                if(old_content != new_content) {
+                    content_changed = true;
+                }
             }
 
             $.ctrl = function(key, callback, args) {
@@ -224,7 +237,7 @@
             </div>  
 
             <div id="editor" class="editor">
-                <textarea id="content" cols="1" rows="1">Hello World!</textarea>
+                <textarea id="content" cols="1" rows="1" onkeydown="OnTextareaKeyDown()">Hello World!</textarea>
             </div>
             <div id="revision" class="editor" style="color: #B0D1E8;"></dev>
         </div>
