@@ -102,3 +102,20 @@ class HtmlPage(FilePage):
         val = h.unescape( self.GetOutput() )
         self.response.out.write(val)
 
+class LastFile(FilePage):
+    def get_public_file_id(self):
+        return "not_defined"
+
+    def get(self):
+        if self.check_user(False):
+            files = db.GqlQuery("SELECT * FROM File WHERE author = :1 LIMIT 50", self.get_current_user())
+            if files.count() > 0:
+                file_id = files[0].key()
+            else:
+                file_id = self.create_file("New File")
+        else:
+                file_id = self.get_public_file_id()
+        self.response.out.write(file_id)
+
+
+

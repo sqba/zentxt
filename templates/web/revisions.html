@@ -1,0 +1,9 @@
+{"revision": [
+    {% for revision in revisions %}
+        {"key": "{{ revision.key }}",
+        "date": "{{ revision.date|date:"l, F d Y, h:m:s" }}",
+        "author": "{{ revision.author }}" },
+    {% endfor %}
+    {"key": "", "date": "", "author": "" }
+]}
+
