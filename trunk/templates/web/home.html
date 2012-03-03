@@ -35,6 +35,7 @@
             function load_file(file_id) {
                 save_file_content();
                 $("#revision").hide();
+                $("#listview").hide();
                 $("#editor").show();
                 $("#content").text("");
                 console.log("Loading file " + file_id);
@@ -79,6 +80,7 @@
                 $.get(url, function(data) {
                     $("#revision").html(data);
                     $("#editor").hide();
+                    $("#listview").hide();
                     $("#revision").show();
                 });
             }
@@ -101,12 +103,51 @@
                 });
             }
 
+            function preview_revision(key) {
+                //alert("onclick");
+                var el = $("#"+key);
+                if( el.is(':visible') ) {
+                    el.hide();
+                } else {
+                    var rev_text = el.html();
+                    console.log(rev_text);
+                    if (rev_text.length == 0) {
+                        var url="/rev?id=" + key;
+                        var data;
+                        $.get(url, function(data) {
+                            el.html(data);
+                        });
+                    }
+                    el.show();
+                }
+            }
+
+            function show_all_revisions() {
+                $("#editor").hide();
+                $("#listview").show();
+                $("#revision").hide();
+                var file_id=get_file_id();
+                var list_id="#file_list_full";
+                $(list_id).children().remove();
+                var url="/revisions?file=" + file_id + "&max=15";
+                $.getJSON(url, function(data) {
+                    $.each(data.revision, function(index, revision) {
+                        //console.log(revision);
+                        if(revision.key.length > 0) {
+                            url="preview_revision('"+revision.key+"')";
+                            var el = "<li><a href='#' onclick="+url+">"+revision.date+"</a><div id='"+revision.key+"' style='display: none;'></div></li>";
+                            $(list_id).append(el);
+                        }
+                    });
+                });
+            }
+
             function load_files() {
                 var list_id="#file_list";
                 $(list_id).children().remove();
                 var el = "<li><a href='#' onclick='create_new_file()'>New file</a></li>";
                 $(list_id).append(el);
-                var el = "<li><a href='#' onclick='show_all_file()'>Show all</a></li>";
+                var el = "<li><a href='#' onclick='show_all_files()'>Show all</a></li>";
                 $(list_id).append(el);
                 el = "<li class='menuseprator'></li>"
                 $(list_id).append(el);
@@ -138,6 +179,24 @@
                 var data;
                 $.get("/suggestions", function(data) {
                     load_file( data );
+                });
+            }
+            
+            function show_all_files() {
+                $("#editor").hide();
+                $("#listview").show();
+                $("#revision").hide();
+                var list_id="#file_list_full";
+                $(list_id).children().remove();
+                $.getJSON("/files", function(data) {
+                    $.each(data.file, function(index, file) {
+                        //console.log(file);
+                        if(file.name.length > 0) {
+                            url="load_file('" + file.key + "')";
+                            var el = "<li><a href='#' onclick="+url+">"+file.name+"</a></li>";
+                            $(list_id).append(el);
+                        }
+                    });
                 });
             }
 
@@ -239,7 +298,13 @@
             <div id="editor" class="editor">
                 <textarea id="content" cols="1" rows="1" onkeydown="OnTextareaKeyDown()">Hello World!</textarea>
             </div>
-            <div id="revision" class="editor" style="color: #B0D1E8;"></dev>
+            <div id="revision" class="editor" style="color: #B0D1E8;"></div>
+            <div id="listview" class="editor" style="color: #B0D1E8;">
+                <ul id="file_list_full">
+                  <li>
+                  </li>
+                </ul>
+            </dev>
         </div>
     </body>
 </html>
