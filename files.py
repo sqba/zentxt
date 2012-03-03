@@ -19,9 +19,10 @@ class FilesPage(BasePage):
             self.redirect('/')
             return
 
-        max_results = int(self.request.get("max"))
-        if max_results is None:
-            max_results = 10
+        max_results = 10
+        tmp = self.request.get("max")
+        if len(tmp):
+            max_results = int(tmp)
 
         query = File.gql("WHERE author = :1", self.get_current_user())
         files = query.fetch(max_results);

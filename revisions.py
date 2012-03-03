@@ -15,9 +15,10 @@ class RevisionsPage(BasePage):
 
     def get_revisions(self, file):
         try:
-            max_results = int(self.request.get("max"))
-            if max_results is None:
-                max_results = 10
+            max_results = 10
+            tmp = self.request.get("max")
+            if len(tmp):
+                max_results = int(tmp)
             query = Revision.gql("WHERE file = :1 ORDER BY date DESC", file)
             #.filter('__key__ != :1', file.head.key())
             return query.fetch(max_results)
