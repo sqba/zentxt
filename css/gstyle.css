@@ -57,6 +57,7 @@ body { margin:0 auto; }
 .floatleft{float:left;}   
 /*--for the right options navigation menu--*/  
 .floatright{float:right;}  
+.floatcenter{float:center;}  
 /*--clear all floating, left and right--*/  
 .clear{clear:both;}
 .editor {

@@ -108,14 +108,27 @@ class LastFile(FilePage):
 
     def get(self):
         if self.check_user(False):
-            files = db.GqlQuery("SELECT * FROM File WHERE author = :1 LIMIT 50", self.get_current_user())
-            if files.count() > 0:
-                file_id = files[0].key()
+            query = Revision.gql("WHERE author = :1 ORDER BY date DESC", self.get_current_user())
+            revs = query.fetch(1)
+            if len(revs) > 0:
+                file_id = revs[0].file.key()
             else:
                 file_id = self.create_file("New File")
         else:
                 file_id = self.get_public_file_id()
         self.response.out.write(file_id)
 
-
-
+class FileInfoPage(BasePage):
+    def get(self):
+        file_id = self.request.get("id")
+        file = self.get_file(file_id)
+        if file is None:
+            file = File()
+        else:
+            if self.get_file_permission(file) < base.ACCESS_READ:
+                file = File()
+        template_values = {
+            'file'   	: file
+        }
+        path = self.get_template_path( 'fileinfo.html' )
+        self.response.out.write(template.render(path, template_values))
