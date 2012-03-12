@@ -20,5 +20,17 @@ handlers:
 - url: /css/images
   static_dir: css/images
 
+- url: /codemirror/lib
+  static_dir: codemirror/lib
+
+- url: /codemirror/theme
+  static_dir: codemirror/theme
+
+- url: /codemirror/mode/xml
+  static_dir: codemirror/mode/xml
+
+- url: /codemirror/doc
+  static_dir: codemirror/doc
+
 - url: .*
   script: main.py

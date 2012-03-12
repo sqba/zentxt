@@ -45,7 +45,8 @@ class FilePage(BasePage):
             file_text = "Welcome to ZenTxt!"
             revisions = []
         else:
-            file_text = cgi.escape(head.content)
+            #file_text = cgi.escape(head.content)
+            file_text = head.content
             revisions = self.get_revisions(file)
 
         template_values = {
