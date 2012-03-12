@@ -5,6 +5,11 @@
         <link rel="stylesheet" href="css/gstyle.css" />
         <script src="js/jquery-1.7.1.min.js"></script>
         <title>ZenTxt</title>
+        <link rel="stylesheet" href="codemirror/lib/codemirror.css">
+        <script src="codemirror/lib/codemirror.js"></script>
+        <link rel="stylesheet" href="codemirror/theme/eclipse.css">
+        <script src="codemirror/mode/xml/xml.js"></script>
+        <link rel="stylesheet" href="codemirror/doc/docs.css">
         <script>
             var current_file_id="";
             function set_file_id(id) {
@@ -16,11 +21,48 @@
                 //return sessionstorage.getItem("fileid");
             }
 
+            var editor;
+            function create_editor() {
+                editor = CodeMirror.fromTextArea(document.getElementById("content"), {
+                    lineNumbers: false,
+                    theme: "eclipse",
+                    //saveFunction: function() { alert("saveFunction"); OnTextareaKeyDown(); },
+                    extraKeys: {
+                        "F11": function() {
+                          var scroller = editor.getScrollerElement();
+                          if (scroller.className.search(/\bCodeMirror-fullscreen\b/) === -1) {
+                            scroller.className += " CodeMirror-fullscreen";
+                            scroller.style.height = "100%";
+                            scroller.style.width = "100%";
+                            editor.refresh();
+                          } else {
+                            scroller.className = scroller.className.replace(" CodeMirror-fullscreen", "");
+                            scroller.style.height = '';
+                            scroller.style.width = '';
+                            editor.refresh();
+                          }
+                        },
+                        "Esc": function() {
+                          var scroller = editor.getScrollerElement();
+                          if (scroller.className.search(/\bCodeMirror-fullscreen\b/) !== -1) {
+                            scroller.className = scroller.className.replace(" CodeMirror-fullscreen", "");
+                            scroller.style.height = '';
+                            scroller.style.width = '';
+                            editor.refresh();
+                          }
+                        },
+                    }
+                });
+            }
+            
             var content_changed=false;
             var old_content="";
             function save_file_content() {
-                if(true == content_changed) {
-                    var new_content = $("#content").val();
+                //if(true == content_changed) {
+                if(old_content != new_content) {
+                    //var new_content = $("#content").val();
+                    var new_content = editor.getValue();
+                    //alert(new_content);
                     var file_id=get_file_id();
                     console.log("Saving file " + file_id);
                     var data;
@@ -42,7 +84,8 @@
                 var url="/file?id=" + file_id;
                 var data;
                 $.get(url, function(data) {
-                    $("#content").val(data);
+                    //$("#content").val(data);
+                    editor.setValue(data);
                     old_content = data;
                     set_file_id( file_id );
                     load_revisions( file_id );
@@ -226,7 +269,9 @@
             }
             
             function OnTextareaKeyDown() {
-                var new_content = $("#content").val();
+                //editor.save();
+                //var new_content = $("#content").val();
+                new_content = editor.getValue();
                 if(old_content != new_content) {
                     content_changed = true;
                 }
@@ -262,7 +307,24 @@
                 }
             }
             document.onkeydown=checkKeyCode;
+
         </script>
+        <style type="text/css">
+            .CodeMirror {border-top: 1px solid black; border-bottom: 1px solid black;}
+            .CodeMirror-fullscreen {
+                display: block;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 9999;
+                margin: 0;
+                padding: 0;
+                border: 0px solid #BBBBBB;
+                opacity: 1;
+            }
+        </style>
     </head>
     <body onbeforeunload="OnUnload()" onload="OnLoad()">
         <div id="wrapper">
@@ -304,6 +366,9 @@
             <div id="editor" class="editor">
                 <textarea id="content" cols="1" rows="1" onkeydown="OnTextareaKeyDown()">Hello World!</textarea>
             </div>
+            <script>
+                create_editor();
+            </script>
             <div id="revision" class="editor" style="background-color: #555555; overflow:scroll;"></div>
             <div id="listview" class="editor" style="background-color: #555555; overflow:scroll;">
                 <ul id="file_list_full">
