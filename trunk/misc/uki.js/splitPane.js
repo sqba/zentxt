@@ -50,7 +50,7 @@ uki(
         view: 'VSplitPane', rect: '1000 600', anchors: 'left top right bottom', vertical: true, handlePosition: 800, bottomMin: 1,
         // top part
         topChildViews: {
-            view: 'Container', rect: '790 490', anchors: 'top left right bottom'
+            view: 'MultilineTextField', rect: '790 490', anchors: 'top left right bottom'
         },
         // bottom part
         bottomChildViews: {
@@ -128,12 +128,12 @@ uki('#filelist').data(data);
 
 uki('#filelist').bind('click', function(e) {
     var item = this.data()[this.selectedIndex()];
-    alert(item);
+    uki('MultilineTextField').value(item);
 }).parent();
 
 uki('#history').bind('click', function(e) {
     var item = this.data()[this.selectedIndex()][0];
-    alert(item);
+    uki('MultilineTextField').value(item);
 }).parent();
 
 
