@@ -42,19 +42,19 @@ uki(
         view: 'ScrollPane', rect: '200 600', anchors: 'top left right bottom',
             childViews: { view: 'Box', rect: '0 0 200 900002', anchors: 'top left right', background: '#CCC',
                 childViews: { view: 'List', rect: '0 0 200 900000', anchors: 'top left right', 
-                    data: data, rowHeight: 30, id: 'list', throttle: 0, multiselect: false, textSelectable: false }
+                    rowHeight: 30, id: 'filelist', throttle: 0, multiselect: false, textSelectable: false }
             }
     }],
     // right part
     rightChildViews: [{
-        view: 'VSplitPane', rect: '1000 600', anchors: 'left top right bottom', vertical: true, handlePosition: 800, topMin: 400,
+        view: 'VSplitPane', rect: '1000 600', anchors: 'left top right bottom', vertical: true, handlePosition: 800, bottomMin: 1,
         // top part
         topChildViews: {
             view: 'Container', rect: '790 490', anchors: 'top left right bottom'
         },
         // bottom part
         bottomChildViews: {
-            view: 'Table', rect: '790 100', anchors: 'left top right bottom', columns: [
+            view: 'Table', id: 'history', rect: '790 100', anchors: 'left top right bottom', columns: [
                 { view: 'table.CustomColumn', label: 'Name', resizable: true, minWidth: 100, width: 250, formatter: formatHlted },
                 { view: 'table.NumberColumn', label: 'Time', resizable: true, width: 50, formatter: formatTime },
                 { view: 'table.CustomColumn', label: 'Artist', resizable: true, minWidth: 100, width: 150, formatter: formatHlted },
@@ -94,7 +94,7 @@ window.onLibraryLoad = function(data) {
     uki('#loading').visible(false);
     var model = new DummyModel(data),
         lastQuery = '',
-        table = uki('Table');
+        table = uki('#history');
         
     model.bind('search.foundInChunk', function(chunk) {
         table.data(table.data().concat(chunk)).layout();
@@ -115,12 +115,26 @@ window.onLibraryLoad = function(data) {
         }
     });
     document.body.className += '';
+   
 };
 var script = document.createElement('script'),
     head = document.getElementsByTagName('head')[0];
 script.src = 'library.js';
 head.insertBefore(script, head.firstChild);
 
+
+uki('#filelist').data(data);
+//uki('#filelist').render();
+
+uki('#filelist').bind('click', function(e) {
+    var item = this.data()[this.selectedIndex()];
+    alert(item);
+}).parent();
+
+uki('#history').bind('click', function(e) {
+    var item = this.data()[this.selectedIndex()];
+    alert(item);
+}).parent();
 
 
 /*
