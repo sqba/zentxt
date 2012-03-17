@@ -132,7 +132,7 @@ uki('#filelist').bind('click', function(e) {
 }).parent();
 
 uki('#history').bind('click', function(e) {
-    var item = this.data()[this.selectedIndex()];
+    var item = this.data()[this.selectedIndex()][0];
     alert(item);
 }).parent();
 
